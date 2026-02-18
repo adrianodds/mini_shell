@@ -18,6 +18,12 @@ void exec_line(char *line, char **envp)
         free_args(args);
         return ;
     }
+    if (is_builtin(args[0]))
+    {
+        exec_builtin(args, envp);
+        free_args(args);
+        return ;
+    }
     pid = fork();
     if (pid == 0)
     {
