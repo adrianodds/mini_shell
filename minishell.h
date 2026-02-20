@@ -20,10 +20,11 @@
 #include "ft_printf/ft_printf.h"
 
 /**************EXEC***************/
-void	exec_line(char *line, char **envp);
+void	exec_line(char *line, char ***envp);
 
 /***************Utils*************/
 void	free_args(char **args);
+int     is_valid_identifier(const char *arg);
 
 /****************Path*************/
 char	*get_path(char **envp);
@@ -36,6 +37,8 @@ int		builtin_echo(char **args);
 int		builtin_cd(char **args, char **envp);
 int		builtin_exit(char **args);
 int		is_builtin(char *cmd);
-int		exec_builtin(char **args, char **envp);
+int		exec_builtin(char **args, char ***envp);
+int     builtin_export(char **args, char ***envp);
+char    **duplicate_envp(char **envp);
 
 #endif

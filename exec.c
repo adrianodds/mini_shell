@@ -5,7 +5,7 @@ static  char    **temp_parse(char *line)
     return (ft_split(line, ' '));
 }
 
-void exec_line(char *line, char **envp)
+void exec_line(char *line, char ***envp)
 {
     char    **args;
     pid_t   pid;
@@ -27,13 +27,13 @@ void exec_line(char *line, char **envp)
     pid = fork();
     if (pid == 0)
     {
-        cmd_path = find_cmd_path(args[0], envp);
+        cmd_path = find_cmd_path(args[0], *envp);
         if (!cmd_path)
         {
             ft_putstr_fd("minishell: command not found\n", 2);
             exit(127);
         }
-        execve(cmd_path,args,envp);
+        execve(cmd_path,args,*envp);
         perror("minishell: execve");
         exit(EXIT_FAILURE);
     }

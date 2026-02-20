@@ -33,14 +33,12 @@ int	builtin_echo(char **args)
 
 	newline = 1;
 	i = 1;
-	
 	// Verifica se tem a flag -n
 	if (args[1] && ft_strncmp(args[1], "-n", 3) == 0)
 	{
 		newline = 0;
 		i = 2;
 	}
-	
 	// Imprime os argumentos separados por espaço
 	while (args[i])
 	{
@@ -49,7 +47,6 @@ int	builtin_echo(char **args)
 			ft_printf(" ");
 		i++;
 	}
-	
 	// Imprime newline se não tiver flag -n
 	if (newline)
 		ft_printf("\n");
@@ -84,7 +81,6 @@ int	builtin_cd(char **args, char **envp)
 	}
 	else
 		path = args[1];
-	
 	// Tenta mudar para o diretório
 	if (chdir(path) != 0)
 	{
@@ -124,7 +120,6 @@ int	builtin_exit(char **args)
 		}
 		exit_code = ft_atoi(args[1]);
 	}
-	
 	ft_printf("exit\n");
 	exit(exit_code);
 }
@@ -148,24 +143,20 @@ int	is_builtin(char *cmd)
 	return (0);
 }
 
-int	exec_builtin(char **args, char **envp)
+int	exec_builtin(char **args, char ***envp)
 {
 	if (ft_strncmp(args[0], "echo", 5) == 0)
 		return (builtin_echo(args));
 	if (ft_strncmp(args[0], "cd", 3) == 0)
-		return (builtin_cd(args, envp));
+		return (builtin_cd(args, *envp));
 	if (ft_strncmp(args[0], "pwd", 4) == 0)
 		return (builtin_pwd());
 	if (ft_strncmp(args[0], "env", 4) == 0)
-		return (builtin_env(envp));
+		return (builtin_env(*envp));
 	if (ft_strncmp(args[0], "exit", 5) == 0)
 		return (builtin_exit(args));
-	// export e unset ainda não implementados
 	if (ft_strncmp(args[0], "export", 7) == 0)
-	{
-		ft_putstr_fd("minishell: export: not implemented yet\n", 2);
-		return (1);
-	}
+		return (builtin_export(args, envp));
 	if (ft_strncmp(args[0], "unset", 6) == 0)
 	{
 		ft_putstr_fd("minishell: unset: not implemented yet\n", 2);

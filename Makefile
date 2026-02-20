@@ -11,7 +11,7 @@ LIBFT = $(LIBFT_DIR)/libft.a
 PRINTF_DIR = ft_printf
 PRINTF = $(PRINTF_DIR)/libftprintf.a
 
-SRC = main.c exec.c utils.c path.c builtins.c
+SRC = main.c exec.c utils.c path.c builtins.c validation_identifier.c built_export.c
 
 
 OBJS = $(SRC:.c=.o)
