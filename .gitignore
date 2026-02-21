@@ -1,0 +1,26 @@
+# Compilação
+*.o
+*.a
+*.so
+minishell
+*.out
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Documentação/Exemplos
+TOKENIZER_EXAMPLES.md
+*.env
+
+# Testes
+*.test
+test_output
+valgrind_output.txt
+
+# Arquivos temporários
+.DS_Store
+*.log
