@@ -45,7 +45,7 @@ int main(int ac, char **av, char **envp)
 			break;
 		printf("Teste: %s\n", line);
 		add_history(line);
-		exec_line(line, &envp);
+		exec_line(line, &env);
 		free(line);
 	}
 	free_args(env);

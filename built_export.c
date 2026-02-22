@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static int env_find_index(char **env, const char *key, int key_len)
+int env_find_index(char **env, const char *key, int key_len)
 {
     int i;
 
@@ -49,11 +49,18 @@ static char **env_set(char **env, const char *key, const char *value)
     int key_len;
     int idx;
     char *entry;
+    char *tmp;
 
     key_len = ft_strlen(key);
     idx = env_find_index(env, key, key_len);
     if(value)
-        entry = ft_strjoin(key, value);
+    {
+        tmp = ft_strjoin(key, "=");
+        if (!tmp)
+            return (env);
+        entry = ft_strjoin(tmp, value);
+        free(tmp);
+    }
     else
         entry = ft_strdup(key);
     if(!entry)
@@ -79,11 +86,11 @@ static void export_print(char **env)
     if (eq)
     {
         *eq = '\0';
-        ft_printf("declare -x %s=\"%s\"\n", env[i], eq + 1);
+        printf("declare -x %s=\"%s\"\n", env[i], eq + 1);
         *eq = '=';
     }
     else
-        ft_printf("declare -x %s\n", env[i]);
+        printf("declare -x %s\n", env[i]);
     i++;
    }
 }

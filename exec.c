@@ -5,6 +5,26 @@ static  char    **temp_parse(char *line)
     return (ft_split(line, ' '));
 }
 
+static void expand_args(char **args, char **envp)
+{
+	int	i;
+	char	*expanded;
+
+	i = 0;
+	while (args[i])
+	{
+		expanded = expand_variables(args[i], envp);
+		if (expanded && expanded != args[i])
+		{
+			free(args[i]);
+			args[i] = expanded;
+		}
+		else if (expanded)
+			free(expanded);
+		i++;
+	}
+}
+
 void exec_line(char *line, char ***envp)
 {
     char    **args;
@@ -18,6 +38,7 @@ void exec_line(char *line, char ***envp)
         free_args(args);
         return ;
     }
+	expand_args(args, *envp);
     if (is_builtin(args[0]))
     {
         exec_builtin(args, envp);
@@ -41,3 +62,21 @@ void exec_line(char *line, char ***envp)
     free_args(args);
 }
 
+int	exec_builtin(char **args, char ***envp)
+{
+	if (ft_strncmp(args[0], "echo", 5) == 0)
+		return (builtin_echo(args));
+	if (ft_strncmp(args[0], "cd", 3) == 0)
+		return (builtin_cd(args, *envp));
+	if (ft_strncmp(args[0], "pwd", 4) == 0)
+		return (builtin_pwd());
+	if (ft_strncmp(args[0], "env", 4) == 0)
+		return (builtin_env(*envp));
+	if (ft_strncmp(args[0], "exit", 5) == 0)
+		return (builtin_exit(args));
+	if (ft_strncmp(args[0], "export", 7) == 0)
+		return (builtin_export(args, envp));
+	if (ft_strncmp(args[0], "unset", 6) == 0)
+		return (builtin_unset(args, envp));
+	return (0);
+}

@@ -17,7 +17,6 @@
 #include <limits.h>
 #include <ctype.h>
 #include "libft/libft.h"
-#include "ft_printf/ft_printf.h"
 
 /**************EXEC***************/
 void	exec_line(char *line, char ***envp);
@@ -25,6 +24,7 @@ void	exec_line(char *line, char ***envp);
 /***************Utils*************/
 void	free_args(char **args);
 int     is_valid_identifier(const char *arg);
+char	*expand_variables(char *str, char **envp);
 
 /****************Path*************/
 char	*get_path(char **envp);
@@ -40,5 +40,7 @@ int		is_builtin(char *cmd);
 int		exec_builtin(char **args, char ***envp);
 int     builtin_export(char **args, char ***envp);
 char    **duplicate_envp(char **envp);
+int     builtin_unset(char **args, char ***envp);
+int     env_find_index(char **env, const char *key, int key_len);
 
 #endif
