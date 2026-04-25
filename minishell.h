@@ -18,6 +18,8 @@
 #include <ctype.h>
 #include "libft/libft.h"
 
+extern volatile sig_atomic_t	g_exit_status;
+
 /**************EXEC***************/
 void	exec_line(char *line, char ***envp);
 
@@ -25,6 +27,7 @@ void	exec_line(char *line, char ***envp);
 void	free_args(char **args);
 int     is_valid_identifier(const char *arg);
 char	*expand_variables(char *str, char **envp);
+char	**env_set(char **env, const char *key, const char *value);
 
 /****************Path*************/
 char	*get_path(char **envp);
@@ -34,7 +37,7 @@ char	*find_cmd_path(char *cmd, char **envp);
 int		builtin_pwd(void);
 int		builtin_env(char **envp);
 int		builtin_echo(char **args);
-int		builtin_cd(char **args, char **envp);
+int		builtin_cd(char **args, char ***envp);
 int		builtin_exit(char **args);
 int		is_builtin(char *cmd);
 int		exec_builtin(char **args, char ***envp);

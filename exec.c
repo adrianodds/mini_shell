@@ -67,7 +67,7 @@ int	exec_builtin(char **args, char ***envp)
 	if (ft_strncmp(args[0], "echo", 5) == 0)
 		return (builtin_echo(args));
 	if (ft_strncmp(args[0], "cd", 3) == 0)
-		return (builtin_cd(args, *envp));
+		return (builtin_cd(args, envp));
 	if (ft_strncmp(args[0], "pwd", 4) == 0)
 		return (builtin_pwd());
 	if (ft_strncmp(args[0], "env", 4) == 0)

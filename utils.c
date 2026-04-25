@@ -44,7 +44,7 @@ static char *get_var_value(char **envp, const char *var_name, int name_len)
 	return ("");
 }
 
-char *expand_variables(char *str, char **envp)
+char	*expand_variables(char *str, char **envp)
 {
 	char	*result;
 	char	*pos;
@@ -56,8 +56,7 @@ char *expand_variables(char *str, char **envp)
 
 	if (!str)
 		return (ft_strdup(""));
-	pos = ft_strchr(str, '$');
-	if (!pos)
+	if (!ft_strchr(str, '$'))
 		return (ft_strdup(str));
 	result = ft_strdup("");
 	if (!result)
@@ -82,6 +81,20 @@ char *expand_variables(char *str, char **envp)
 			return (NULL);
 		result = var_name;
 		str = pos + 1;
+		if (*str == '?')
+		{
+			var_value = ft_itoa(g_exit_status);
+			if (!var_value)
+				return (free(result), NULL);
+			tmp = ft_strjoin(result, var_value);
+			free(var_value);
+			free(result);
+			result = tmp;
+			if (!result)
+				return (NULL);
+			str++;
+			continue ;
+		}
 		var_len = 0;
 		while (str[var_len] && (ft_isalnum(str[var_len]) || str[var_len] == '_'))
 			var_len++;
@@ -93,7 +106,7 @@ char *expand_variables(char *str, char **envp)
 			if (!result)
 				return (NULL);
 			str++;
-			continue;
+			continue ;
 		}
 		var_name = ft_substr(str, 0, var_len);
 		if (!var_name)

@@ -53,23 +53,30 @@ int	builtin_echo(char **args)
 	return (0);
 }
 
-int	builtin_cd(char **args, char **envp)
+int	builtin_cd(char **args, char ***envp)
 {
+	char	old_pwd[PATH_MAX];
+	char	new_pwd[PATH_MAX];
 	char	*path;
 	int		i;
 
+	// Guarda o diretório atual antes de mudar
+	if (getcwd(old_pwd, PATH_MAX) == NULL)
+	{
+		perror("minishell: cd: getcwd");
+		return (1);
+	}
 	// Se não tem argumento ou argumento é ~, vai para HOME
 	if (args[1] == NULL || ft_strncmp(args[1], "~", 2) == 0)
 	{
-		// Busca a variável HOME no environment
 		i = 0;
 		path = NULL;
-		while (envp[i])
+		while ((*envp)[i])
 		{
-			if (ft_strncmp(envp[i], "HOME=", 5) == 0)
+			if (ft_strncmp((*envp)[i], "HOME=", 5) == 0)
 			{
-				path = envp[i] + 5;
-				break;
+				path = (*envp)[i] + 5;
+				break ;
 			}
 			i++;
 		}
@@ -91,6 +98,14 @@ int	builtin_cd(char **args, char **envp)
 		ft_putstr_fd("\n", 2);
 		return (1);
 	}
+	// Atualiza PWD e OLDPWD no environment
+	if (getcwd(new_pwd, PATH_MAX) == NULL)
+	{
+		perror("minishell: cd: getcwd");
+		return (1);
+	}
+	*envp = env_set(*envp, "OLDPWD", old_pwd);
+	*envp = env_set(*envp, "PWD", new_pwd);
 	return (0);
 }
 

@@ -44,7 +44,7 @@ static char **env_add(char **env, const char *entry)
     return (new_env);
 }
 
-static char **env_set(char **env, const char *key, const char *value)
+char **env_set(char **env, const char *key, const char *value)
 {
     int key_len;
     int idx;
