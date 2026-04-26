@@ -104,6 +104,8 @@ char			**copy_envp(char **envp);
 char			*expand_variables(t_shell *shell, const char *str);
 char			*remove_quotes(const char *str);
 int				ft_isalnum(int c);
+int				ft_isalpha(int c);
+int				ft_isdigit(int c);
 char			*ft_itoa(int n);
 
 /* Pipe and redirection */
