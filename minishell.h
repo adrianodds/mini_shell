@@ -111,6 +111,7 @@ char			*ft_itoa(int n);
 /* Pipe and redirection */
 void			setup_pipes(t_shell *shell, t_cmd *cmd);
 void			close_pipes(t_shell *shell, t_cmd *commands);
+void			close_unused_pipes(t_shell *shell, t_cmd *commands, t_cmd *current_cmd);
 void			handle_redirections(t_shell *shell, t_cmd *cmd);
 
 /* Signal handling */

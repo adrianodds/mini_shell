@@ -13,10 +13,13 @@ void	execute_commands(t_shell *shell, t_cmd *commands)
 	current = commands;
 	while (current)
 	{
-		cmd_count++;
+		if (current->argc > 0)
+			cmd_count++;
 		current = current->next;
 	}
-	if (cmd_count == 1 && is_builtin(commands->args[0]) && !commands->redirects)
+	if (cmd_count == 0)
+		return ;
+	if (cmd_count == 1 && commands->argc > 0 && is_builtin(commands->args[0]) && !commands->redirects)
 	{
 		handle_builtin(shell, commands);
 		return ;
@@ -25,6 +28,11 @@ void	execute_commands(t_shell *shell, t_cmd *commands)
 	i = 0;
 	while (current)
 	{
+		if (current->argc == 0)
+		{
+			current = current->next;
+			continue ;
+		}
 		setup_pipes(shell, current);
 		if (fork() == 0)
 		{
@@ -53,12 +61,18 @@ void	execute_commands(t_shell *shell, t_cmd *commands)
 					close(current->pipe_out);
 				}
 			}
+			close_unused_pipes(shell, commands, current);
 			if (is_builtin(current->args[0]))
 			{
 				handle_builtin(shell, current);
 				exit(shell->exit_status);
 			}
 			execvp(current->args[0], current->args);
+			if (errno == EACCES || errno == EISDIR)
+			{
+				perror(current->args[0]);
+				exit(126);
+			}
 			perror(current->args[0]);
 			exit(127);
 		}
@@ -86,8 +100,6 @@ void	setup_pipes(t_shell *shell, t_cmd *cmd)
 {
 	if (cmd->next)
 	{
-		if (shell->last_pipe_out != -1)
-			close(shell->last_pipe_out);
 		if (pipe(shell->pipe_fd) == -1)
 		{
 			perror("pipe");
@@ -97,6 +109,26 @@ void	setup_pipes(t_shell *shell, t_cmd *cmd)
 		cmd->next->pipe_in = shell->pipe_fd[0];
 		shell->last_pipe_out = shell->pipe_fd[1];
 	}
+}
+
+
+void	close_unused_pipes(t_shell *shell, t_cmd *commands, t_cmd *current_cmd)
+{
+	t_cmd	*cmd;
+
+	cmd = commands;
+	while (cmd)
+	{
+		if (cmd != current_cmd)
+		{
+			if (cmd->pipe_in != -1)
+				close(cmd->pipe_in);
+			if (cmd->pipe_out != -1)
+				close(cmd->pipe_out);
+		}
+		cmd = cmd->next;
+	}
+	(void)shell;
 }
 
 void	close_pipes(t_shell *shell, t_cmd *commands)

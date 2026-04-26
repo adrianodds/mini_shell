@@ -141,9 +141,14 @@ t_cmd	*parse_tokens(t_shell *shell, t_token *tokens)
 			}
 			processed_value = expand_variables(shell, token_iter->value);
 			expanded_value = remove_quotes(processed_value);
-			current->args[current->argc] = expanded_value;
+			if (expanded_value && *expanded_value)
+			{
+				current->args[current->argc] = expanded_value;
+				current->argc++;
+			}
+			else
+				free(expanded_value);
 			free(processed_value);
-			current->argc++;
 			token_iter = token_iter->next;
 		}
 		else if (token_iter->type == TOKEN_REDIR_IN 

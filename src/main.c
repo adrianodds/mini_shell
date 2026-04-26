@@ -6,8 +6,6 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_shell	shell;
 
-	(void)argc;
-	(void)argv;
 	shell.envp = copy_envp(envp);
 	shell.exit_status = 0;
 	shell.current_path = get_env(&shell, "PWD");
@@ -15,9 +13,18 @@ int	main(int argc, char **argv, char **envp)
 	shell.commands = NULL;
 	shell.last_pipe_out = -1;
 	setup_signals();
-	minishell_loop(&shell);
+	if (argc > 2 && ft_strcmp(argv[1], "-c") == 0)
+	{
+		parse_input(&shell, argv[2]);
+		if (shell.commands)
+			execute_commands(&shell, shell.commands);
+		free_commands(shell.commands);
+		shell.commands = NULL;
+	}
+	else
+		minishell_loop(&shell);
 	free_shell(&shell);
-	return (0);
+	return (shell.exit_status);
 }
 
 void	minishell_loop(t_shell *shell)
@@ -26,19 +33,32 @@ void	minishell_loop(t_shell *shell)
 
 	while (1)
 	{
-		input = readline("minishell$ ");
+		if (isatty(STDIN_FILENO))
+			input = readline("minishell$ ");
+		else
+		{
+			input = NULL;
+			size_t len = 0;
+			if (getline(&input, &len, stdin) == -1)
+				break ;
+		}
 		if (!input)
 		{
 			printf("exit\n");
 			break ;
 		}
-		if (*input)
+		if (isatty(STDIN_FILENO) && *input)
 			add_history(input);
-		parse_input(shell, input);
-		if (shell->commands)
-			execute_commands(shell, shell->commands);
-		free_commands(shell->commands);
-		shell->commands = NULL;
+		if (*input != '\n')
+		{
+			if (input[ft_strlen(input) - 1] == '\n')
+				input[ft_strlen(input) - 1] = '\0';
+			parse_input(shell, input);
+			if (shell->commands)
+				execute_commands(shell, shell->commands);
+			free_commands(shell->commands);
+			shell->commands = NULL;
+		}
 		free(input);
 		fflush(stdout);
 		fflush(stderr);
@@ -49,7 +69,6 @@ void	setup_signals(void)
 {
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
-	signal(SIGPIPE, SIG_IGN);
 }
 
 void	handle_sigint(int sig)
