@@ -6,6 +6,9 @@ void	execute_commands(t_shell *shell, t_cmd *commands)
 	int		cmd_count;
 	int		i;
 	int		status;
+	pid_t	pid;
+	pid_t	last_pid;
+	pid_t	waited_pid;
 
 	if (!commands)
 		return ;
@@ -26,6 +29,7 @@ void	execute_commands(t_shell *shell, t_cmd *commands)
 	}
 	current = commands;
 	i = 0;
+	last_pid = -1;
 	while (current)
 	{
 		if (current->argc == 0)
@@ -34,7 +38,8 @@ void	execute_commands(t_shell *shell, t_cmd *commands)
 			continue ;
 		}
 		setup_pipes(shell, current);
-		if (fork() == 0)
+		pid = fork();
+		if (pid == 0)
 		{
 			if (current->pipe_in != -1)
 			{
@@ -76,6 +81,8 @@ void	execute_commands(t_shell *shell, t_cmd *commands)
 			perror(current->args[0]);
 			exit(127);
 		}
+		if (pid > 0)
+			last_pid = pid;
 		if (current->pipe_in != -1)
 		{
 			close(current->pipe_in);
@@ -89,9 +96,9 @@ void	execute_commands(t_shell *shell, t_cmd *commands)
 		current = current->next;
 		i++;
 	}
-	while (wait(&status) > 0)
+	while ((waited_pid = wait(&status)) > 0)
 	{
-		if (WIFEXITED(status))
+		if (waited_pid == last_pid && WIFEXITED(status))
 			shell->exit_status = WEXITSTATUS(status);
 	}
 }

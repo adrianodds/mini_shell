@@ -37,6 +37,8 @@ void	minishell_loop(t_shell *shell)
 			input = readline("minishell$ ");
 		else
 		{
+			printf("minishell$ \n");
+			fflush(stdout);
 			input = NULL;
 			size_t len = 0;
 			if (getline(&input, &len, stdin) == -1)

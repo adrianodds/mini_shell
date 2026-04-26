@@ -15,6 +15,9 @@
             "matchCommandLine": true
         },
         "git checkout": true,
-        "builtin": true
+        "builtin": true,
+        "./minishell_tester/tester": true,
+        "./tester": true,
+        "mkdir": true
     }
 }
