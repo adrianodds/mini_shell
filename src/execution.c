@@ -5,6 +5,7 @@ void	execute_commands(t_shell *shell, t_cmd *commands)
 	t_cmd	*current;
 	int		cmd_count;
 	int		i;
+	int		status;
 
 	if (!commands)
 		return ;
@@ -61,19 +62,32 @@ void	execute_commands(t_shell *shell, t_cmd *commands)
 			perror(current->args[0]);
 			exit(127);
 		}
+		if (current->pipe_in != -1)
+		{
+			close(current->pipe_in);
+			current->pipe_in = -1;
+		}
+		if (current->pipe_out != -1)
+		{
+			close(current->pipe_out);
+			current->pipe_out = -1;
+		}
 		current = current->next;
 		i++;
 	}
-	close_pipes(shell, commands);
-	close_pipes(shell, commands);
-	while (wait(NULL) > 0)
-		;
+	while (wait(&status) > 0)
+	{
+		if (WIFEXITED(status))
+			shell->exit_status = WEXITSTATUS(status);
+	}
 }
 
 void	setup_pipes(t_shell *shell, t_cmd *cmd)
 {
 	if (cmd->next)
 	{
+		if (shell->last_pipe_out != -1)
+			close(shell->last_pipe_out);
 		if (pipe(shell->pipe_fd) == -1)
 		{
 			perror("pipe");
@@ -81,6 +95,7 @@ void	setup_pipes(t_shell *shell, t_cmd *cmd)
 		}
 		cmd->pipe_out = shell->pipe_fd[1];
 		cmd->next->pipe_in = shell->pipe_fd[0];
+		shell->last_pipe_out = shell->pipe_fd[1];
 	}
 }
 

@@ -13,6 +13,7 @@ int	main(int argc, char **argv, char **envp)
 	shell.current_path = get_env(&shell, "PWD");
 	shell.tokens = NULL;
 	shell.commands = NULL;
+	shell.last_pipe_out = -1;
 	setup_signals();
 	minishell_loop(&shell);
 	free_shell(&shell);
