@@ -1,244 +1,123 @@
 #include "../minishell.h"
 
-void	execute_commands(t_shell *shell, t_cmd *commands)
+static int	count_exec_cmds(t_cmd *commands)
 {
+	int	count;
 	t_cmd	*current;
-	int		cmd_count;
-	int		i;
-	int		status;
-	pid_t	pid;
-	pid_t	last_pid;
-	pid_t	waited_pid;
 
-	if (!commands)
-		return ;
-	cmd_count = 0;
+	count = 0;
 	current = commands;
 	while (current)
 	{
 		if (current->argc > 0)
-			cmd_count++;
+			count++;
 		current = current->next;
 	}
-	if (cmd_count == 0)
-		return ;
-	if (cmd_count == 1 && commands->argc > 0 && is_builtin(commands->args[0]) && !commands->redirects)
+	return (count);
+}
+
+static void	close_current_pipes(t_cmd *current)
+{
+	if (current->pipe_in != -1)
 	{
-		handle_builtin(shell, commands);
-		return ;
+		close(current->pipe_in);
+		current->pipe_in = -1;
 	}
-	current = commands;
-	i = 0;
-	last_pid = -1;
-	while (current)
+	if (current->pipe_out != -1)
 	{
-		if (current->argc == 0)
+		close(current->pipe_out);
+		current->pipe_out = -1;
+	}
+}
+
+static void	exec_child_process(t_shell *shell, t_cmd *commands, t_cmd *current)
+{
+	t_redir	*redir;
+	int		has_stdout_redirect;
+
+	if (current->pipe_in != -1)
+	{
+		dup2(current->pipe_in, STDIN_FILENO);
+		close(current->pipe_in);
+	}
+	handle_redirections(shell, current);
+	if (current->pipe_out != -1)
+	{
+		redir = current->redirects;
+		has_stdout_redirect = 0;
+		while (redir)
 		{
-			current = current->next;
-			continue ;
+			if (redir->type == REDIR_OUT || redir->type == REDIR_APPEND)
+				has_stdout_redirect = 1;
+			redir = redir->next;
 		}
-		setup_pipes(shell, current);
-		pid = fork();
-		if (pid == 0)
+		if (!has_stdout_redirect)
 		{
-			if (current->pipe_in != -1)
-			{
-				dup2(current->pipe_in, STDIN_FILENO);
-				close(current->pipe_in);
-			}
-			handle_redirections(shell, current);
-			if (current->pipe_out != -1)
-			{
-				t_redir *redir = current->redirects;
-				int has_stdout_redirect = 0;
-				while (redir)
-				{
-					if (redir->type == REDIR_OUT || redir->type == REDIR_APPEND)
-					{
-						has_stdout_redirect = 1;
-						break;
-					}
-					redir = redir->next;
-				}
-				if (!has_stdout_redirect)
-				{
-					dup2(current->pipe_out, STDOUT_FILENO);
-					close(current->pipe_out);
-				}
-			}
-			close_unused_pipes(shell, commands, current);
-			if (is_builtin(current->args[0]))
-			{
-				handle_builtin(shell, current);
-				exit(shell->exit_status);
-			}
-			execvp(current->args[0], current->args);
-			if (errno == EACCES || errno == EISDIR)
-			{
-				perror(current->args[0]);
-				exit(126);
-			}
-			perror(current->args[0]);
-			exit(127);
-		}
-		if (pid > 0)
-			last_pid = pid;
-		if (current->pipe_in != -1)
-		{
-			close(current->pipe_in);
-			current->pipe_in = -1;
-		}
-		if (current->pipe_out != -1)
-		{
+			dup2(current->pipe_out, STDOUT_FILENO);
 			close(current->pipe_out);
-			current->pipe_out = -1;
 		}
-		current = current->next;
-		i++;
 	}
-	while ((waited_pid = wait(&status)) > 0)
+	close_unused_pipes(shell, commands, current);
+	if (is_builtin(current->args[0]))
 	{
+		handle_builtin(shell, current);
+		exit(shell->exit_status);
+	}
+	execvp(current->args[0], current->args);
+	if (errno == EACCES || errno == EISDIR)
+	{
+		perror(current->args[0]);
+		exit(126);
+	}
+	perror(current->args[0]);
+	exit(127);
+}
+
+static void	wait_children(t_shell *shell, pid_t last_pid)
+{
+	int		status;
+	pid_t	waited_pid;
+
+	while (1)
+	{
+		waited_pid = wait(&status);
+		if (waited_pid <= 0)
+			break ;
 		if (waited_pid == last_pid && WIFEXITED(status))
 			shell->exit_status = WEXITSTATUS(status);
 	}
 }
 
-void	setup_pipes(t_shell *shell, t_cmd *cmd)
-{
-	if (cmd->next)
-	{
-		if (pipe(shell->pipe_fd) == -1)
-		{
-			perror("pipe");
-			exit(1);
-		}
-		cmd->pipe_out = shell->pipe_fd[1];
-		cmd->next->pipe_in = shell->pipe_fd[0];
-		shell->last_pipe_out = shell->pipe_fd[1];
-	}
-}
-
-
-void	close_unused_pipes(t_shell *shell, t_cmd *commands, t_cmd *current_cmd)
-{
-	t_cmd	*cmd;
-
-	cmd = commands;
-	while (cmd)
-	{
-		if (cmd != current_cmd)
-		{
-			if (cmd->pipe_in != -1)
-				close(cmd->pipe_in);
-			if (cmd->pipe_out != -1)
-				close(cmd->pipe_out);
-		}
-		cmd = cmd->next;
-	}
-	(void)shell;
-}
-
-void	close_pipes(t_shell *shell, t_cmd *commands)
+void	execute_commands(t_shell *shell, t_cmd *commands)
 {
 	t_cmd	*current;
+	pid_t	pid;
+	pid_t	last_pid;
+	int		cmd_count;
 
+	if (!commands)
+		return ;
+	cmd_count = count_exec_cmds(commands);
+	if (cmd_count == 0)
+		return ;
+	if (cmd_count == 1 && commands->argc > 0 && is_builtin(commands->args[0])
+		&& !commands->redirects)
+		return ((void)handle_builtin(shell, commands));
 	current = commands;
+	last_pid = -1;
 	while (current)
 	{
-		if (current->pipe_in != -1)
+		if (current->argc > 0)
 		{
-			close(current->pipe_in);
-			current->pipe_in = -1;
+			setup_pipes(shell, current);
+			pid = fork();
+			if (pid == 0)
+				exec_child_process(shell, commands, current);
+			if (pid > 0)
+				last_pid = pid;
 		}
-		if (current->pipe_out != -1)
-		{
-			close(current->pipe_out);
-			current->pipe_out = -1;
-		}
+		close_current_pipes(current);
 		current = current->next;
 	}
-	(void)shell;
-}
-
-void	handle_redirections(t_shell *shell, t_cmd *cmd)
-{
-	t_redir	*redir;
-	int		fd;
-
-	redir = cmd->redirects;
-	while (redir)
-	{
-		if (redir->type == REDIR_IN)
-		{
-			fd = open(redir->file, O_RDONLY);
-			if (fd == -1)
-			{
-				perror(redir->file);
-				exit(1);
-			}
-			dup2(fd, STDIN_FILENO);
-			close(fd);
-		}
-		else if (redir->type == REDIR_OUT)
-		{
-			fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			if (fd == -1)
-			{
-				perror(redir->file);
-				exit(1);
-			}
-			dup2(fd, STDOUT_FILENO);
-			close(fd);
-		}
-		else if (redir->type == REDIR_APPEND)
-		{
-			fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-			if (fd == -1)
-			{
-				perror(redir->file);
-				exit(1);
-			}
-			dup2(fd, STDOUT_FILENO);
-			close(fd);
-		}
-		redir = redir->next;
-	}
-	(void)shell;
-}
-
-void	handle_builtin(t_shell *shell, t_cmd *cmd)
-{
-	if (ft_strcmp(cmd->args[0], "echo") == 0)
-		shell->exit_status = builtin_echo(shell, cmd);
-	else if (ft_strcmp(cmd->args[0], "cd") == 0)
-		shell->exit_status = builtin_cd(shell, cmd);
-	else if (ft_strcmp(cmd->args[0], "pwd") == 0)
-		shell->exit_status = builtin_pwd(shell, cmd);
-	else if (ft_strcmp(cmd->args[0], "export") == 0)
-		shell->exit_status = builtin_export(shell, cmd);
-	else if (ft_strcmp(cmd->args[0], "unset") == 0)
-		shell->exit_status = builtin_unset(shell, cmd);
-	else if (ft_strcmp(cmd->args[0], "env") == 0)
-		shell->exit_status = builtin_env(shell, cmd);
-	else if (ft_strcmp(cmd->args[0], "exit") == 0)
-		builtin_exit(shell, cmd);
-}
-
-int	is_builtin(const char *cmd)
-{
-	if (ft_strcmp(cmd, "echo") == 0)
-		return (1);
-	if (ft_strcmp(cmd, "cd") == 0)
-		return (1);
-	if (ft_strcmp(cmd, "pwd") == 0)
-		return (1);
-	if (ft_strcmp(cmd, "export") == 0)
-		return (1);
-	if (ft_strcmp(cmd, "unset") == 0)
-		return (1);
-	if (ft_strcmp(cmd, "env") == 0)
-		return (1);
-	if (ft_strcmp(cmd, "exit") == 0)
-		return (1);
-	return (0);
+	wait_children(shell, last_pid);
 }

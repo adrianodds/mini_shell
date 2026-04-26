@@ -29,7 +29,8 @@ char	*get_env(t_shell *shell, const char *key)
 	key_len = ft_strlen(key);
 	while (shell->envp[i])
 	{
-		if (ft_strncmp(shell->envp[i], key, key_len) == 0 && shell->envp[i][key_len] == '=')
+		if (ft_strncmp(shell->envp[i], key, key_len) == 0
+			&& shell->envp[i][key_len] == '=')
 			return (shell->envp[i] + key_len + 1);
 		i++;
 	}
@@ -46,7 +47,8 @@ void	set_env(t_shell *shell, const char *key, const char *value)
 	key_len = ft_strlen(key);
 	while (shell->envp[i])
 	{
-		if (ft_strncmp(shell->envp[i], key, key_len) == 0 && shell->envp[i][key_len] == '=')
+		if (ft_strncmp(shell->envp[i], key, key_len) == 0
+			&& shell->envp[i][key_len] == '=')
 		{
 			new_var = malloc(key_len + ft_strlen(value) + 2);
 			ft_strcpy(new_var, key);

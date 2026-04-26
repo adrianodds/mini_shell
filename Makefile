@@ -10,9 +10,17 @@ INC_DIR		=	.
 SOURCES		=	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/parsing.c \
 				$(SRC_DIR)/execution.c \
-				$(SRC_DIR)/builtins.c \
+				$(SRC_DIR)/execution_pipes.c \
+				$(SRC_DIR)/builtins_main.c \
+				$(SRC_DIR)/builtins_export.c \
+				$(SRC_DIR)/builtins_dispatch.c \
 				$(SRC_DIR)/environment.c \
-				$(SRC_DIR)/utils.c
+				$(SRC_DIR)/utils_memory.c \
+				$(SRC_DIR)/utils_string1.c \
+				$(SRC_DIR)/utils_string2.c \
+				$(SRC_DIR)/utils_expand.c \
+				$(SRC_DIR)/utils_char.c \
+				$(SRC_DIR)/utils_itoa.c
 
 OBJECTS		=	$(SOURCES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 

@@ -30,6 +30,7 @@ int	main(int argc, char **argv, char **envp)
 void	minishell_loop(t_shell *shell)
 {
 	char	*input;
+	size_t	len;
 
 	while (1)
 	{
@@ -40,7 +41,7 @@ void	minishell_loop(t_shell *shell)
 			printf("minishell$ \n");
 			fflush(stdout);
 			input = NULL;
-			size_t len = 0;
+			len = 0;
 			if (getline(&input, &len, stdin) == -1)
 				break ;
 		}

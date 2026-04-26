@@ -34,14 +34,16 @@ t_token	*tokenize(t_shell *shell, char *input)
 		}
 		else if (!in_quote && (*input == ' ' || *input == '\t' || *input == '\n'))
 		{
-			if (input > start && *(input - 1) != ' ' && *(input - 1) != '\t' && *(input - 1) != '\n')
+			if (input > start && *(input - 1) != ' '
+				&& *(input - 1) != '\t' && *(input - 1) != '\n')
 				add_token(&tokens, start, input - start, TOKEN_WORD);
 			start = input + 1;
 			input++;
 		}
 		else if (!in_quote && *input == '|')
 		{
-			if (input > start && *(input - 1) != ' ' && *(input - 1) != '\t' && *(input - 1) != '\n')
+			if (input > start && *(input - 1) != ' '
+				&& *(input - 1) != '\t' && *(input - 1) != '\n')
 				add_token(&tokens, start, input - start, TOKEN_WORD);
 			add_token(&tokens, "|", 1, TOKEN_PIPE);
 			start = input + 1;
@@ -49,7 +51,8 @@ t_token	*tokenize(t_shell *shell, char *input)
 		}
 		else if (!in_quote && *input == '<')
 		{
-			if (input > start && *(input - 1) != ' ' && *(input - 1) != '\t' && *(input - 1) != '\n')
+			if (input > start && *(input - 1) != ' '
+				&& *(input - 1) != '\t' && *(input - 1) != '\n')
 				add_token(&tokens, start, input - start, TOKEN_WORD);
 			if (*(input + 1) == '<')
 			{
@@ -65,7 +68,8 @@ t_token	*tokenize(t_shell *shell, char *input)
 		}
 		else if (!in_quote && *input == '>')
 		{
-			if (input > start && *(input - 1) != ' ' && *(input - 1) != '\t' && *(input - 1) != '\n')
+			if (input > start && *(input - 1) != ' '
+				&& *(input - 1) != '\t' && *(input - 1) != '\n')
 				add_token(&tokens, start, input - start, TOKEN_WORD);
 			if (*(input + 1) == '>')
 			{
@@ -193,6 +197,7 @@ void	parse_redirections(t_shell *shell, t_cmd *cmd, t_token **tokens)
 	t_redir	*new_redir;
 	t_redir	*current;
 	t_token	*token_iter;
+	char	*processed;
 
 	token_iter = *tokens;
 	if (token_iter->type == TOKEN_REDIR_IN)
@@ -200,7 +205,7 @@ void	parse_redirections(t_shell *shell, t_cmd *cmd, t_token **tokens)
 		token_iter = token_iter->next;
 		if (token_iter && token_iter->type == TOKEN_WORD)
 		{
-			char *processed = expand_variables(shell, token_iter->value);
+			processed = expand_variables(shell, token_iter->value);
 			new_redir = malloc(sizeof(t_redir));
 			new_redir->file = remove_quotes(processed);
 			free(processed);
@@ -223,7 +228,7 @@ void	parse_redirections(t_shell *shell, t_cmd *cmd, t_token **tokens)
 		token_iter = token_iter->next;
 		if (token_iter && token_iter->type == TOKEN_WORD)
 		{
-			char *processed = expand_variables(shell, token_iter->value);
+			processed = expand_variables(shell, token_iter->value);
 			new_redir = malloc(sizeof(t_redir));
 			new_redir->file = remove_quotes(processed);
 			free(processed);
@@ -246,7 +251,7 @@ void	parse_redirections(t_shell *shell, t_cmd *cmd, t_token **tokens)
 		token_iter = token_iter->next;
 		if (token_iter && token_iter->type == TOKEN_WORD)
 		{
-			char *processed = expand_variables(shell, token_iter->value);
+			processed = expand_variables(shell, token_iter->value);
 			new_redir = malloc(sizeof(t_redir));
 			new_redir->file = remove_quotes(processed);
 			free(processed);
@@ -269,7 +274,7 @@ void	parse_redirections(t_shell *shell, t_cmd *cmd, t_token **tokens)
 		token_iter = token_iter->next;
 		if (token_iter && token_iter->type == TOKEN_WORD)
 		{
-			char *processed = expand_variables(shell, token_iter->value);
+			processed = expand_variables(shell, token_iter->value);
 			new_redir = malloc(sizeof(t_redir));
 			new_redir->file = remove_quotes(processed);
 			free(processed);
