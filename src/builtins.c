@@ -204,7 +204,8 @@ int	builtin_exit(t_shell *shell, t_cmd *cmd)
 		{
 			fprintf(stderr, "minishell: exit: %s: numeric argument required\n", 
 				cmd->args[1]);
-			exit(2);
+			shell->exit_status = 2;
+			return (2);
 		}
 		i = 0;
 		while (str[i])
@@ -213,13 +214,13 @@ int	builtin_exit(t_shell *shell, t_cmd *cmd)
 			{
 				fprintf(stderr, "minishell: exit: %s: numeric argument required\n", 
 					cmd->args[1]);
-				exit(2);
+				shell->exit_status = 2;
+				return (2);
 			}
 			i++;
 		}
 		exit_code = atoi(cmd->args[1]);
 	}
-	free_shell(shell);
-	exit(exit_code & 0xFF);
-	return (0);
+	shell->exit_status = exit_code & 0xFF;
+	return (exit_code & 0xFF);
 }
