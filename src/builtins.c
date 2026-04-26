@@ -220,6 +220,6 @@ int	builtin_exit(t_shell *shell, t_cmd *cmd)
 		exit_code = atoi(cmd->args[1]);
 	}
 	free_shell(shell);
-	exit(exit_code);
+	exit(exit_code & 0xFF);
 	return (0);
 }
