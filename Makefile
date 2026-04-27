@@ -6,6 +6,8 @@ LDFLAGS		=	-lreadline
 SRC_DIR		=	src
 OBJ_DIR		=	obj
 INC_DIR		=	.
+LIBFT_DIR	=	$(SRC_DIR)/libft
+LIBFT		=	$(LIBFT_DIR)/libft.a
 
 SOURCES		=	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/parsing.c \
@@ -16,18 +18,17 @@ SOURCES		=	$(SRC_DIR)/main.c \
 				$(SRC_DIR)/builtins_dispatch.c \
 				$(SRC_DIR)/environment.c \
 				$(SRC_DIR)/utils_memory.c \
-				$(SRC_DIR)/utils_string1.c \
-				$(SRC_DIR)/utils_string2.c \
-				$(SRC_DIR)/utils_expand.c \
-				$(SRC_DIR)/utils_char.c \
-				$(SRC_DIR)/utils_itoa.c
+				$(SRC_DIR)/utils_expand.c
 
 OBJECTS		=	$(SOURCES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 all: $(NAME)
 
-$(NAME): $(OBJECTS)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJECTS) $(LDFLAGS)
+$(LIBFT):
+	$(MAKE) -C $(LIBFT_DIR)
+
+$(NAME): $(LIBFT) $(OBJECTS)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJECTS) $(LIBFT) $(LDFLAGS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)
@@ -35,9 +36,11 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 
 clean:
 	rm -rf $(OBJ_DIR)
+	$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean
 	rm -f $(NAME)
+	$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all
 

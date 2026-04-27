@@ -12,6 +12,7 @@
 # include <errno.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include "src/libft/libft.h"
 
 # define MAX_TOKENS 1024
 # define MAX_TOKEN_LEN 8192
@@ -73,14 +74,10 @@ typedef struct s_shell
 
 /* Function prototypes */
 
-/* Main functions */
-void			minishell_loop(t_shell *shell);
-
 /* Parsing functions */
 void			parse_input(t_shell *shell, char *input);
 t_token			*tokenize(t_shell *shell, char *input);
 t_cmd			*parse_tokens(t_shell *shell, t_token *tokens);
-void			parse_redirections(t_shell *shell, t_cmd *cmd, t_token **tokens);
 
 /* Execution functions */
 void			execute_commands(t_shell *shell, t_cmd *commands);
@@ -103,10 +100,6 @@ void			set_env(t_shell *shell, const char *key, const char *value);
 char			**copy_envp(char **envp);
 char			*expand_variables(t_shell *shell, const char *str);
 char			*remove_quotes(const char *str);
-int				ft_isalnum(int c);
-int				ft_isalpha(int c);
-int				ft_isdigit(int c);
-char			*ft_itoa(int n);
 
 /* Pipe and redirection */
 void			setup_pipes(t_shell *shell, t_cmd *cmd);
@@ -114,26 +107,8 @@ void			close_pipes(t_shell *shell, t_cmd *commands);
 void			close_unused_pipes(t_shell *shell, t_cmd *commands, t_cmd *current_cmd);
 void			handle_redirections(t_shell *shell, t_cmd *cmd);
 
-/* Signal handling */
-void			setup_signals(void);
-void			handle_sigint(int sig);
-
 /* Utility functions */
-char			**split_str(char *str, char *delim);
-void			free_tokens(t_token *tokens);
 void			free_commands(t_cmd *commands);
 void			free_shell(t_shell *shell);
-void			free_split(char **split);
-char			*ft_strdup(const char *s);
-char			*ft_strndup(const char *s, size_t n);
-size_t			ft_strlen(const char *s);
-char			*ft_strjoin(char *s1, char *s2);
-int				ft_strcmp(const char *s1, const char *s2);
-int				ft_strncmp(const char *s1, const char *s2, size_t n);
-char			*ft_strchr(const char *s, int c);
-char			*ft_strrchr(const char *s, int c);
-char			*ft_strcpy(char *dest, const char *src);
-char			*ft_strcat(char *dest, const char *src);
-void			add_token(t_token **tokens, char *value, int len, int type);
 
 #endif

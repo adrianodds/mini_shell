@@ -6,7 +6,7 @@ static int	append_var_value(t_shell *shell, char *var_name, char *result, int j)
 	char	*exit_code;
 	int		k;
 
-	if (ft_strcmp(var_name, "?") == 0)
+	if (ft_strncmp(var_name, "?", 2) == 0)
 	{
 		exit_code = ft_itoa(shell->exit_status);
 		k = 0;
@@ -54,6 +54,63 @@ static int	handle_dollar(t_shell *shell, const char *str, int *i, char *result)
 	return (append_var_value(shell, var_name, result, 0));
 }
 
+static int	copy_expanded(char *result, char *tmp, int j)
+{
+	int	k;
+
+	k = 0;
+	while (tmp[k] && j < 8191)
+		result[j++] = tmp[k++];
+	return (j);
+}
+
+static int	handle_quotes_in_expand(const char *str, int *i, char *result, int *q)
+{
+	if (str[*i] == '"' && !q[1])
+	{
+		result[q[2]++] = str[(*i)++];
+		q[0] = !q[0];
+		return (1);
+	}
+	if (str[*i] == '\'' && !q[0])
+	{
+		result[q[2]++] = str[(*i)++];
+		q[1] = !q[1];
+		return (1);
+	}
+	return (0);
+}
+
+static char	*alloc_remove_quotes(const char *str, int *len)
+{
+	char	*result;
+
+	if (!str)
+		return (NULL);
+	*len = ft_strlen(str);
+	result = malloc(*len + 1);
+	return (result);
+}
+
+static int	handle_quote_remove(const char *str, int *i, char *in_quote,
+		char *quote_char)
+{
+	if (!*in_quote && (str[*i] == '\'' || str[*i] == '"'))
+	{
+		*in_quote = 1;
+		*quote_char = str[*i];
+		(*i)++;
+		return (1);
+	}
+	if (*in_quote && str[*i] == *quote_char)
+	{
+		*in_quote = 0;
+		(*i)++;
+		return (1);
+	}
+	return (0);
+}
+
 char	*remove_quotes(const char *str)
 {
 	char	*result;
@@ -63,77 +120,60 @@ char	*remove_quotes(const char *str)
 	char	in_quote;
 	char	quote_char;
 
-	if (!str)
+	result = alloc_remove_quotes(str, &len);
+	if (!result)
 		return (NULL);
-	len = ft_strlen(str);
-	result = malloc(len + 1);
 	i = 0;
 	j = 0;
 	in_quote = 0;
 	quote_char = 0;
 	while (i < len)
 	{
-		if (!in_quote && (str[i] == '\'' || str[i] == '"'))
-		{
-			in_quote = 1;
-			quote_char = str[i++];
-		}
-		else if (in_quote && str[i] == quote_char)
-		{
-			in_quote = 0;
-			i++;
-		}
-		else
-			result[j++] = str[i++];
+		if (handle_quote_remove(str, &i, &in_quote, &quote_char))
+			continue ;
+		result[j++] = str[i++];
 	}
 	result[j] = '\0';
 	return (result);
 }
 
+static void	handle_expand_dollar(t_shell *shell, const char *str, int *i,
+		char *result, int *j)
+{
+	char	tmp[8192];
+	int		k;
+
+	k = handle_dollar(shell, str, i, tmp);
+	if (k == -1 && *j < 8191)
+		result[(*j)++] = '$';
+	else if (k >= 0)
+	{
+		tmp[k] = '\0';
+		*j = copy_expanded(result, tmp, *j);
+	}
+}
+
 char	*expand_variables(t_shell *shell, const char *str)
 {
 	char	result[8192];
-	char	tmp[8192];
+	int		q[3];
 	int		i;
-	int		j;
-	int		k;
-	int		in_double_quote;
-	int		in_single_quote;
 
 	if (!str)
 		return (NULL);
+	q[0] = 0;
+	q[1] = 0;
+	q[2] = 0;
 	i = 0;
-	j = 0;
-	in_double_quote = 0;
-	in_single_quote = 0;
-	while (str[i] && j < 8191)
+	while (str[i] && q[2] < 8191)
 	{
-		if (str[i] == '"' && !in_single_quote)
-		{
-			result[j++] = str[i++];
-			in_double_quote = !in_double_quote;
-		}
-		else if (str[i] == '\'' && !in_double_quote)
-		{
-			result[j++] = str[i++];
-			in_single_quote = !in_single_quote;
-		}
-		else if (str[i] == '$' && !in_single_quote)
-		{
-			k = handle_dollar(shell, str, &i, tmp);
-			if (k == -1 && j < 8191)
-				result[j++] = '$';
-			else
-			{
-				tmp[k] = '\0';
-				k = 0;
-				while (tmp[k] && j < 8191)
-					result[j++] = tmp[k++];
-			}
-		}
+		if (handle_quotes_in_expand(str, &i, result, q))
+			continue ;
+		if (str[i] == '$' && !q[1])
+			handle_expand_dollar(shell, str, &i, result, &q[2]);
 		else
-			result[j++] = str[i++];
+			result[q[2]++] = str[i++];
 	}
-	result[j] = '\0';
+	result[q[2]] = '\0';
 	return (ft_strdup(result));
 }

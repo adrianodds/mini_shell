@@ -18,6 +18,14 @@
         "builtin": true,
         "./minishell_tester/tester": true,
         "./tester": true,
-        "mkdir": true
+        "mkdir": true,
+        "/^cd /home/adduarte/Documentos/minishell && python3 - <<'PY'\nimport pathlib,re\nctrl=\\{'if','while','for','switch','else'\\}\nfor f in sorted\\(pathlib\\.Path\\('src'\\)\\.rglob\\('\\*\\.c'\\)\\):\n    lines=f\\.read_text\\(\\)\\.splitlines\\(\\)\n    i=0\n    while i < len\\(lines\\)-1:\n        line=lines\\[i\\]\\.strip\\(\\)\n        if not line or line\\.startswith\\('#'\\) or ';' in line or lines\\[i\\+1\\]\\.strip\\(\\)!='\\{':\n            i\\+=1; continue\n        first=line\\.split\\('\\('\\)\\[0\\]\\.strip\\(\\)\\.split\\(\\)\\[-1\\]\n        if first in ctrl:\n            i\\+=1; continue\n        depth=0;j=i\\+1\n        while j<len\\(lines\\):\n            depth \\+= lines\\[j\\]\\.count\\('\\{'\\)\n            depth -= lines\\[j\\]\\.count\\('\\}'\\)\n            if depth==0: break\n            j\\+=1\n        length=j-i\\+1\n        if length>25:\n            print\\(f\"\\{f\\}:\\{i\\+1\\}-\\{j\\+1\\} \\{first\\} \\(\\{length\\}\\)\"\\)\n        i=j\\+1\nPY$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^cd /home/adduarte/Documentos/minishell && python3 - <<'PY'\nimport re, pathlib\nroot=pathlib\\.Path\\('src'\\)\nforbidden=\\[\\]\nfor p in root\\.rglob\\('\\*\\.c'\\):\n    txt=p\\.read_text\\(\\)\n    for i,l in enumerate\\(txt\\.splitlines\\(\\),1\\):\n        if re\\.search\\(r'\\\\bfor\\\\s\\*\\\\\\(', l\\):\n            forbidden\\.append\\(\\(p\\.as_posix\\(\\),i,l\\.strip\\(\\)\\)\\)\nprint\\('FOR_OCCURRENCES',len\\(forbidden\\)\\)\nfor x in forbidden:\n    print\\(f'\\{x\\[0\\]\\}:\\{x\\[1\\]\\}:\\{x\\[2\\]\\}'\\)\n\n# naive function length estimator\nsig_re=re\\.compile\\(r'\\^\\[\\\\w\\\\s\\\\\\*\\]\\+\\\\b\\(\\[A-Za-z_\\]\\[A-Za-z0-9_\\]\\*\\)\\\\s\\*\\\\\\(\\[\\^;\\]\\*\\\\\\)\\\\s\\*\\$'\\)\nfor p in root\\.rglob\\('\\*\\.c'\\):\n    lines=p\\.read_text\\(\\)\\.splitlines\\(\\)\n    i=0\n    while i < len\\(lines\\):\n        line=lines\\[i\\]\n        if line\\.strip\\(\\)\\.startswith\\('#'\\):\n            i\\+=1; continue\n        m=sig_re\\.match\\(line\\.strip\\(\\)\\)\n        if m and i\\+1 < len\\(lines\\) and lines\\[i\\+1\\]\\.strip\\(\\)=='\\{':\n            name=m\\.group\\(1\\)\n            j=i\\+1\n            depth=0\n            start=i\\+1\n            while j < len\\(lines\\):\n                depth \\+= lines\\[j\\]\\.count\\('\\{'\\)\n                depth -= lines\\[j\\]\\.count\\('\\}'\\)\n                if depth==0 and j>i\\+1:\n                    end=j\\+1\n                    body_len=end-start\\+1\n                    if body_len>25:\n                        print\\(f'LONG \\{p\\.as_posix\\(\\)\\}:\\{name\\}:\\{body_len\\}'\\)\n                    break\n                j\\+=1\n            i=j\\+1\n        else:\n            i\\+=1\nPY$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
     }
 }

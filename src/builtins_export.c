@@ -24,7 +24,7 @@ static int	export_with_equal(t_shell *shell, char *arg)
 	equal_sign = ft_strchr(arg, '=');
 	if (!equal_sign)
 		return (0);
-	key = ft_strndup(arg, equal_sign - arg);
+	key = ft_substr(arg, 0, equal_sign - arg);
 	if (!key)
 		return (1);
 	set_env(shell, key, equal_sign + 1);
@@ -58,31 +58,37 @@ int	builtin_export(t_shell *shell, t_cmd *cmd)
 	return (has_error);
 }
 
+static void	unset_one_var(t_shell *shell, char *name)
+{
+	int	j;
+	int	k;
+
+	j = 0;
+	while (shell->envp[j])
+	{
+		if (ft_strncmp(shell->envp[j], name, ft_strlen(name)) == 0
+			&& shell->envp[j][ft_strlen(name)] == '=')
+		{
+			k = j;
+			while (shell->envp[k])
+			{
+				shell->envp[k] = shell->envp[k + 1];
+				k++;
+			}
+			j--;
+		}
+		j++;
+	}
+}
+
 int	builtin_unset(t_shell *shell, t_cmd *cmd)
 {
 	int	i;
-	int	j;
-	int	k;
 
 	i = 1;
 	while (i < cmd->argc)
 	{
-		j = 0;
-		while (shell->envp[j])
-		{
-			if (ft_strncmp(shell->envp[j], cmd->args[i], ft_strlen(cmd->args[i])) == 0
-				&& shell->envp[j][ft_strlen(cmd->args[i])] == '=')
-			{
-				k = j;
-				while (shell->envp[k])
-				{
-					shell->envp[k] = shell->envp[k + 1];
-					k++;
-				}
-				j--;
-			}
-			j++;
-		}
+		unset_one_var(shell, cmd->args[i]);
 		i++;
 	}
 	return (0);

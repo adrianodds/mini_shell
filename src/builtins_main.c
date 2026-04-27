@@ -1,5 +1,38 @@
 #include "../minishell.h"
 
+static int	valid_exit_arg(char *str)
+{
+	int	i;
+
+	if (*str == '+' || *str == '-')
+		str++;
+	if (*str == '\0')
+		return (0);
+	i = 0;
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+static int	parse_exit_arg(t_shell *shell, t_cmd *cmd, int *exit_code)
+{
+	if (cmd->argc <= 1)
+		return (1);
+	if (!valid_exit_arg(cmd->args[1]))
+	{
+		fprintf(stderr, "minishell: exit: %s: numeric argument required\n",
+			cmd->args[1]);
+		shell->exit_status = 2;
+		return (0);
+	}
+	*exit_code = atoi(cmd->args[1]);
+	return (1);
+}
+
 int	builtin_echo(t_shell *shell, t_cmd *cmd)
 {
 	int	i;
@@ -7,7 +40,7 @@ int	builtin_echo(t_shell *shell, t_cmd *cmd)
 
 	i = 1;
 	newline = 1;
-	if (cmd->argc > 1 && ft_strcmp(cmd->args[1], "-n") == 0)
+	if (cmd->argc > 1 && ft_strncmp(cmd->args[1], "-n", 3) == 0)
 	{
 		newline = 0;
 		i = 2;
@@ -80,8 +113,6 @@ int	builtin_env(t_shell *shell, t_cmd *cmd)
 int	builtin_exit(t_shell *shell, t_cmd *cmd)
 {
 	int		exit_code;
-	int		i;
-	char	*str;
 
 	exit_code = 0;
 	if (cmd->argc > 2)
@@ -90,34 +121,8 @@ int	builtin_exit(t_shell *shell, t_cmd *cmd)
 		shell->exit_status = 1;
 		return (1);
 	}
-	if (cmd->argc > 1)
-	{
-		str = cmd->args[1];
-		if (*str == '+' || *str == '-')
-			str++;
-		if (*str == '\0')
-		{
-			fprintf(stderr,
-				"minishell: exit: %s: numeric argument required\n",
-				cmd->args[1]);
-			shell->exit_status = 2;
-			return (2);
-		}
-		i = 0;
-		while (str[i])
-		{
-			if (!ft_isdigit(str[i]))
-			{
-				fprintf(stderr,
-					"minishell: exit: %s: numeric argument required\n",
-					cmd->args[1]);
-				shell->exit_status = 2;
-				return (2);
-			}
-			i++;
-		}
-		exit_code = atoi(cmd->args[1]);
-	}
+	if (!parse_exit_arg(shell, cmd, &exit_code))
+		return (2);
 	shell->exit_status = exit_code & 0xFF;
 	return (shell->exit_status);
 }

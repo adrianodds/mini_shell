@@ -55,6 +55,25 @@ void	close_pipes(t_shell *shell, t_cmd *commands)
 	(void)shell;
 }
 
+static int	open_redir_fd(t_redir *redir)
+{
+	if (redir->type == REDIR_IN)
+		return (open(redir->file, O_RDONLY));
+	if (redir->type == REDIR_OUT)
+		return (open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644));
+	if (redir->type == REDIR_APPEND)
+		return (open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644));
+	return (-1);
+}
+
+static void	apply_redir_fd(t_redir *redir, int fd)
+{
+	if (redir->type == REDIR_IN)
+		dup2(fd, STDIN_FILENO);
+	else if (redir->type == REDIR_OUT || redir->type == REDIR_APPEND)
+		dup2(fd, STDOUT_FILENO);
+}
+
 void	handle_redirections(t_shell *shell, t_cmd *cmd)
 {
 	t_redir	*redir;
@@ -63,24 +82,14 @@ void	handle_redirections(t_shell *shell, t_cmd *cmd)
 	redir = cmd->redirects;
 	while (redir)
 	{
-		if (redir->type == REDIR_IN)
-			fd = open(redir->file, O_RDONLY);
-		else if (redir->type == REDIR_OUT)
-			fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		else if (redir->type == REDIR_APPEND)
-			fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		else
-			fd = -1;
+		fd = open_redir_fd(redir);
 		if (fd == -1 && redir->type != REDIR_HEREDOC)
 		{
 			perror(redir->file);
 			exit(1);
 		}
-		if (redir->type == REDIR_IN && fd != -1)
-			dup2(fd, STDIN_FILENO);
-		else if ((redir->type == REDIR_OUT || redir->type == REDIR_APPEND)
-			&& fd != -1)
-			dup2(fd, STDOUT_FILENO);
+		if (fd != -1)
+			apply_redir_fd(redir, fd);
 		if (fd != -1)
 			close(fd);
 		redir = redir->next;
