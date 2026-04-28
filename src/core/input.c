@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: carmoliv <carmoliv@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 17:50:21 by carmoliv          #+#    #+#             */
-/*   Updated: 2026/04/28 17:54:25 by carmoliv         ###   ########.fr       */
+/*   Updated: 2026/04/28 19:46:41 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ static void	exec_input(t_shell *shell, char *input)
 		execute_commands(shell, shell->commands);
 	free_commands(shell->commands);
 	shell->commands = NULL;
+	free_tokens(shell->tokens);
+	shell->tokens = NULL;
 }
 
 void	handle_input(t_shell *shell, char *input)

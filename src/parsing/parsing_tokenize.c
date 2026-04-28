@@ -6,7 +6,7 @@
 /*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 14:16:11 by adduarte          #+#    #+#             */
-/*   Updated: 2026/04/28 14:16:12 by adduarte         ###   ########.fr       */
+/*   Updated: 2026/04/28 19:26:25 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,26 @@ void	add_token(t_token **tokens, char *value, int len, int type)
 	t_token	*new_token;
 	t_token	*current;
 
+	if (!value || len < 0)
+		return ;
 	new_token = malloc(sizeof(t_token));
-	new_token->value = ft_substr(value, 0, len);
+	if (!new_token)
+		return ;
+	new_token->value = malloc(len + 1);
+	if (!new_token->value)
+		return (free(new_token));
+	ft_strlcpy(new_token->value, value, len + 1);
 	new_token->type = type;
 	new_token->next = NULL;
 	if (!*tokens)
-		*tokens = new_token;
-	else
 	{
-		current = *tokens;
-		while (current->next)
-			current = current->next;
-		current->next = new_token;
+		*tokens = new_token;
+		return ;
 	}
+	current = *tokens;
+	while (current->next)
+		current = current->next;
+	current->next = new_token;
 }
 
 int	handle_quote_state(int *in_quote, char *quote_char, char **input)

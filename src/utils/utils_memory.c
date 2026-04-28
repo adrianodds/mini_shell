@@ -6,13 +6,13 @@
 /*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 14:16:31 by adduarte          #+#    #+#             */
-/*   Updated: 2026/04/28 14:16:33 by adduarte         ###   ########.fr       */
+/*   Updated: 2026/04/28 19:44:13 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-static void	free_tokens(t_token *tokens)
+void	free_tokens(t_token *tokens)
 {
 	t_token	*current;
 	t_token	*next;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: carmoliv <carmoliv@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 17:50:27 by carmoliv          #+#    #+#             */
-/*   Updated: 2026/04/28 17:50:47 by carmoliv         ###   ########.fr       */
+/*   Updated: 2026/04/28 19:10:49 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ static void	minishell_loop(t_shell *shell)
 		input = read_shell_input();
 		if (!input)
 		{
-			printf("exit\n");
+			if (isatty(STDIN_FILENO))
+				write(1, "exit\n", 5);
 			break ;
 		}
 		handle_input(shell, input);
