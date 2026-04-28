@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing_redir.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/28 14:16:00 by adduarte          #+#    #+#             */
+/*   Updated: 2026/04/28 14:46:49 by adduarte         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 
 static char	*heredoc_tmp_name(void)
@@ -28,8 +40,8 @@ static char	*create_heredoc_file(char *delimiter)
 	cap = 0;
 	while (getline(&line, &cap, stdin) != -1)
 	{
-		if ((line[ft_strlen(line) - 1] == '\n'
-				&& ft_strncmp(line, delimiter, ft_strlen(line) - 1) == 0
+		if ((line[ft_strlen(line) - 1] == '\n' && ft_strncmp(line, delimiter,
+					ft_strlen(line) - 1) == 0
 				&& ft_strlen(delimiter) == ft_strlen(line) - 1)
 			|| ft_strncmp(line, delimiter, ft_strlen(delimiter) + 1) == 0)
 			break ;
@@ -71,12 +83,12 @@ static void	add_redirection(t_cmd *cmd, char *file, int type)
 	}
 }
 
-void	parse_redirections(t_shell *shell, t_cmd *cmd, t_token **tokens)
+void	parse_redirections(t_shell *shell, t_cmd *cmd, t_token **tokens,
+		int redir_type)
 {
 	t_token	*token_iter;
 	char	*processed;
 	char	*file;
-	int		redir_type;
 
 	token_iter = *tokens;
 	redir_type = redir_type_from_token(token_iter->type);
@@ -85,14 +97,14 @@ void	parse_redirections(t_shell *shell, t_cmd *cmd, t_token **tokens)
 	{
 		if (redir_type == REDIR_HEREDOC)
 		{
-			processed = remove_quotes(token_iter->value);
+			processed = remove_quotes(token_iter->value, 0, 0, 0);
 			file = create_heredoc_file(processed);
 			free(processed);
 		}
 		else
 		{
 			processed = expand_variables(shell, token_iter->value);
-			file = remove_quotes(processed);
+			file = remove_quotes(processed, 0, 0, 0);
 			free(processed);
 		}
 		add_redirection(cmd, file, redir_type);

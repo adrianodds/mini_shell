@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adduarte <adduarte@student.42porto.com>    #+#  +:+       +#+        */
+/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-04-18 17:38:43 by adduarte          #+#    #+#             */
-/*   Updated: 2025-04-18 17:38:43 by adduarte         ###   ########.fr       */
+/*   Created: 2025/04/18 17:38:43 by adduarte          #+#    #+#             */
+/*   Updated: 2026/04/28 14:30:33 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,17 +78,3 @@ char	**ft_split(const char *s, char c)
 	result[index[2]] = NULL;
 	return (result);
 }
-/*index[0] = initial_position; index[1] = final_position, \
-index[2] = index_new_word
-int	main(void)
-{
-	char **split = ft_split(" semper congue, euismod non, mi.", 'i');
-	int	i = 0;
-
-	while (split[i])
-	{
-		printf("%s\n", split[i]);
-		i++;
-	}
-
-} */

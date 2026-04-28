@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adduarte <adduarte@student.42porto.com>    #+#  +:+       +#+        */
+/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-04-10 18:02:24 by adduarte          #+#    #+#             */
-/*   Updated: 2025-04-10 18:02:24 by adduarte         ###   ########.fr       */
+/*   Created: 2025/04/10 18:02:24 by adduarte          #+#    #+#             */
+/*   Updated: 2026/04/28 14:28:07 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	*ft_bzero(void *ptr, size_t num)
 {
-	size_t			i;
 	unsigned char	*p;
+	size_t			i;
 
 	p = ptr;
 	i = 0;

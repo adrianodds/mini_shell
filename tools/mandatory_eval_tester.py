@@ -158,7 +158,7 @@ def check_valgrind(minishell_path):
         minishell_path,
     ]
     proc = subprocess.run(cmd, input="exit\n", capture_output=True, text=True)
-    leak_free = "definitely lost: 0 bytes" in proc.stderr
+    leak_free = "definitely lost: 0 bytes" in proc.stderr or "All heap blocks were freed -- no leaks are possible" in proc.stderr
     return leak_free, "checked with valgrind"
 
 

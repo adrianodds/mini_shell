@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtins_export.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/28 14:14:29 by adduarte          #+#    #+#             */
+/*   Updated: 2026/04/28 14:19:23 by adduarte         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 
 static int	is_valid_identifier(const char *arg)
@@ -34,7 +46,9 @@ static int	export_with_equal(t_shell *shell, char *arg)
 
 static int	print_export_error(char *arg)
 {
-	fprintf(stderr, "minishell: export: '%s': not a valid identifier\n", arg);
+	ft_putstr_fd("minishell: export: `", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd("': not a valid identifier\n", 2);
 	return (1);
 }
 

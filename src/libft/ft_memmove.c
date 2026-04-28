@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adduarte <adduarte@student.42porto.com>    #+#  +:+       +#+        */
+/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-04-10 19:35:17 by adduarte          #+#    #+#             */
-/*   Updated: 2025-04-10 19:35:17 by adduarte         ###   ########.fr       */
+/*   Created: 2025/04/10 19:35:17 by adduarte          #+#    #+#             */
+/*   Updated: 2026/04/28 14:30:17 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,15 +57,3 @@ void	*ft_memmove(void *dest, const void *str, size_t num)
 		return (ft_memcpy_reverse(dest, str, num));
 	}
 }
-/*(p < s) checks whether the start of "dest" occurs before the start of "str",\
- or if (p >= (s + num) the start of "dest" occurs after the end of "str". \
- Thus ensuring that there will be no memory overlap at the time of copying.*/
-/*
-int	main(void)
-{
-	char dest[50];
-	char str[] = "abcde";
-	ft_memmove(str+1, str, 3);
-	//memmove(str+1, str, 0);
-	printf("%s\n", str);
-}*/

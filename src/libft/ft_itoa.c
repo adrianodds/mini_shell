@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adduarte <adduarte@student.42porto.com>    #+#  +:+       +#+        */
+/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-04-19 14:04:41 by adduarte          #+#    #+#             */
-/*   Updated: 2025-04-19 14:04:41 by adduarte         ###   ########.fr       */
+/*   Created: 2025/04/19 14:04:41 by adduarte          #+#    #+#             */
+/*   Updated: 2026/04/28 14:29:24 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,13 +61,3 @@ char	*ft_itoa(int n)
 	fill_digits(index, number, lenght);
 	return (index);
 }
-/*
-If you pass a 0, the index[l] = n + '0'; \
-ensure that zero is returned since in the \
-10 conversion condition it does so while \
-is greater than zero.
-#include <stdio.h>
- int	main(void)
-{
-	printf("%s\n", ft_itoa(-15489565));
-}*/

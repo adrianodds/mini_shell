@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adduarte <adduarte@student.42porto.com>    #+#  +:+       +#+        */
+/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-04-16 15:58:38 by adduarte          #+#    #+#             */
-/*   Updated: 2025-04-16 15:58:38 by adduarte         ###   ########.fr       */
+/*   Created: 2025/04/16 15:58:38 by adduarte          #+#    #+#             */
+/*   Updated: 2026/04/28 14:31:43 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,3 @@ char	*ft_strnstr(const char *big, const char *little, size_t len)
 	}
 	return (NULL);
 }
-/* int	main(void) {
-	char haystack[30] = "aaabcabcd";
-	char needle[10] = "aabc";
-	char * empty = (char*)"";
-	if (ft_strnstr(haystack, needle, -1) != NULL) {
-		printf("Substring encontrada: %s\n", ft_strnstr(haystack, needle, -1));
-	} else {
-		printf("Substring não encontrada.\n");
-	}
-
-	return (0);
-} */

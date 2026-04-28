@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execution_exec.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/28 14:15:14 by adduarte          #+#    #+#             */
+/*   Updated: 2026/04/28 14:15:15 by adduarte         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 
 char	*resolve_executable(t_shell *shell, char *cmd);
@@ -43,7 +55,7 @@ static void	exec_external(t_shell *shell, t_cmd *current)
 	path = resolve_executable(shell, current->args[0]);
 	if (!path)
 	{
-		fprintf(stderr, "minishell: %s: command not found\n", current->args[0]);
+		printf("minishell: %s: command not found\n", current->args[0]);
 		exit(127);
 	}
 	execve(path, current->args, shell->envp);

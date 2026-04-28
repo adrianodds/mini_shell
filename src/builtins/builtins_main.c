@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtins_main.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/28 14:14:35 by adduarte          #+#    #+#             */
+/*   Updated: 2026/04/28 14:14:37 by adduarte         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 
 static int	valid_exit_arg(char *str)
@@ -24,7 +36,7 @@ static int	parse_exit_arg(t_shell *shell, t_cmd *cmd, int *exit_code)
 		return (1);
 	if (!valid_exit_arg(cmd->args[1]))
 	{
-		fprintf(stderr, "minishell: exit: %s: numeric argument required\n",
+		printf("minishell: exit: %s: numeric argument required\n",
 			cmd->args[1]);
 		shell->exit_status = 2;
 		return (0);
@@ -66,7 +78,7 @@ int	builtin_cd(t_shell *shell, t_cmd *cmd)
 
 	if (cmd->argc > 2)
 	{
-		fprintf(stderr, "minishell: cd: too many arguments\n");
+		printf("minishell: cd: too many arguments\n");
 		return (1);
 	}
 	if (cmd->argc == 1)
@@ -90,7 +102,7 @@ int	builtin_exit(t_shell *shell, t_cmd *cmd)
 	exit_code = 0;
 	if (cmd->argc > 2)
 	{
-		fprintf(stderr, "minishell: exit: too many arguments\n");
+		printf("minishell: exit: too many arguments\n");
 		shell->exit_status = 1;
 		return (1);
 	}

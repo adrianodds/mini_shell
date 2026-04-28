@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/28 14:14:52 by adduarte          #+#    #+#             */
+/*   Updated: 2026/04/28 14:14:54 by adduarte         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 
 int	g_signal = 0;
@@ -11,12 +23,14 @@ static char	*read_shell_input(void)
 
 	if (isatty(STDIN_FILENO))
 		return (readline("minishell$ "));
-	printf("minishell$ \n");
-	fflush(stdout);
+	write(STDOUT_FILENO, "minishell$ \n", 12);
 	input = NULL;
 	len = 0;
 	if (getline(&input, &len, stdin) == -1)
+	{
+		free(input);
 		return (NULL);
+	}
 	return (input);
 }
 

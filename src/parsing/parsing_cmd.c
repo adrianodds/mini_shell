@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing_cmd.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/28 14:15:51 by adduarte          #+#    #+#             */
+/*   Updated: 2026/04/28 14:46:02 by adduarte         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 
 t_cmd	*new_cmd(void)
@@ -32,7 +44,7 @@ void	handle_word_token(t_shell *shell, t_cmd *current, t_token **token_iter)
 	char	*expanded_value;
 
 	processed_value = expand_variables(shell, (*token_iter)->value);
-	expanded_value = remove_quotes(processed_value);
+	expanded_value = remove_quotes(processed_value, 0, 0, 0);
 	if (expanded_value && *expanded_value)
 	{
 		current->args[current->argc] = expanded_value;

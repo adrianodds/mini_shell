@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execution.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/28 14:15:37 by adduarte          #+#    #+#             */
+/*   Updated: 2026/04/28 14:24:03 by adduarte         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 
 static pid_t	spawn_commands(t_shell *shell, t_cmd *commands);
@@ -5,7 +17,7 @@ void			close_current_pipes(t_cmd *current);
 
 static int	count_exec_cmds(t_cmd *commands)
 {
-	int	count;
+	int		count;
 	t_cmd	*current;
 
 	count = 0;
@@ -34,7 +46,8 @@ static void	wait_children(t_shell *shell, pid_t last_pid)
 	}
 }
 
-static int	handle_single_builtin(t_shell *shell, t_cmd *commands, int cmd_count)
+static int	handle_single_builtin(t_shell *shell, t_cmd *commands,
+		int cmd_count)
 {
 	if (cmd_count == 1 && commands->argc > 0 && is_builtin(commands->args[0])
 		&& !commands->redirects)

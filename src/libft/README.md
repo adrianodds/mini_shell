@@ -1,10 +1,13 @@
-# 🧠 Libft – A Library Worthy of C
+#🧠 Libft – A Library Worthy of C
 
 ## 📚 Descrição
 
-Este projeto consiste em reimplementar várias funções da biblioteca padrão da linguagem C, além de outras funções utilitárias úteis para o desenvolvimento de projetos futuros. A proposta é desenvolver uma biblioteca pessoal — a famosa **Libft** — com foco em manipulação de strings, memória, listas encadeadas e outros elementos fundamentais da linguagem C.
+Este projeto consiste em reimplementar várias funções da biblioteca padrão da linguagem C,
+	além de outras funções utilitárias úteis para o desenvolvimento de projetos futuros. A proposta é desenvolver uma biblioteca pessoal — a famosa **Libft** — com foco em manipulação de strings,
+	memória, listas encadeadas e outros elementos fundamentais da linguagem C.
 
-### Porque quem nunca reimplementou `strlcat()` na unha, nunca viveu a dor e a glória da 42.
+### Porque quem nunca reimplementou `strlcat()` na unha,
+	nunca viveu a dor e a glória da 42.
 
 ## 🛠️ Funcionalidades
 
@@ -53,4 +56,5 @@ Adriano Silva
 
 ## Licença
 
-Este projeto segue as normas da 42: ou seja, pode usar, pode copiar, só não plagie no intra. 😉
+Este projeto segue as normas da 42: ou seja, pode usar, pode copiar,
+	só não plagie no intra. 😉

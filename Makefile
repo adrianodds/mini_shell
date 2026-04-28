@@ -31,6 +31,8 @@ SOURCES		=	$(SRC_DIR)/core/main.c \
 				$(SRC_DIR)/env/environment_set.c \
 				$(SRC_DIR)/utils/utils_memory.c \
 				$(SRC_DIR)/utils/utils_expand.c \
+				$(SRC_DIR)/utils/utils_expand_helpers.c \
+				$(SRC_DIR)/utils/utils_expand_process.c \
 				$(SRC_DIR)/utils/utils_quotes.c
 
 OBJECTS		=	$(SOURCES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
