@@ -10,8 +10,12 @@ LIBFT_DIR	=	$(SRC_DIR)/libft
 LIBFT		=	$(LIBFT_DIR)/libft.a
 
 SOURCES		=	$(SRC_DIR)/core/main.c \
+				$(SRC_DIR)/core/read_fd.c \
+				$(SRC_DIR)/core/read_fd_utils.c \
+				$(SRC_DIR)/core/input.c \
 				$(SRC_DIR)/core/signals.c \
 				$(SRC_DIR)/parsing/parsing.c \
+				$(SRC_DIR)/parsing/heredoc.c \
 				$(SRC_DIR)/parsing/parsing_tokenize.c \
 				$(SRC_DIR)/parsing/parsing_tokenize_ops.c \
 				$(SRC_DIR)/parsing/parsing_cmd.c \

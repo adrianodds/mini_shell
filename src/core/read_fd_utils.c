@@ -1,25 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signals.c                                          :+:      :+:    :+:   */
+/*   read_fd_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: carmoliv <carmoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/28 14:14:58 by adduarte          #+#    #+#             */
-/*   Updated: 2026/04/28 18:13:51 by carmoliv         ###   ########.fr       */
+/*   Created: 2026/04/28 18:21:04 by carmoliv          #+#    #+#             */
+/*   Updated: 2026/04/28 18:21:27 by carmoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-extern int	g_signal;
+#define BUFFER_SIZE 4096
 
-void	handle_sigint(int sig)
+char	*reader_init(size_t *cap)
 {
-	(void)sig;
-	g_signal = 1;
-	printf("\n");
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
+	char	*res;
+
+	*cap = BUFFER_SIZE;
+	res = malloc(*cap + 1);
+	return (res);
+}
+
+char	*reader_fail(char *res)
+{
+	free(res);
+	return (NULL);
+}
+
+char	*reader_end(char *res, size_t len)
+{
+	res[len] = '\0';
+	return (res);
 }

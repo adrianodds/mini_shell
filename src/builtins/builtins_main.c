@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_main.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: carmoliv <carmoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 14:14:35 by adduarte          #+#    #+#             */
-/*   Updated: 2026/04/28 16:10:15 by adduarte         ###   ########.fr       */
+/*   Updated: 2026/04/28 16:22:55 by carmoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static int	parse_exit_arg(t_shell *shell, t_cmd *cmd, int *exit_code)
 		shell->exit_status = 2;
 		return (0);
 	}
-	*exit_code = (cmd->args[1]);
+	*exit_code = ft_atoi(cmd->args[1]);
 	return (1);
 }
 
@@ -66,7 +66,6 @@ int	builtin_echo(t_shell *shell, t_cmd *cmd)
 	}
 	if (newline)
 		printf("\n");
-	fflush(stdout);
 	(void)shell;
 	return (0);
 }

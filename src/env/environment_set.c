@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment_set.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: carmoliv <carmoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 14:15:04 by adduarte          #+#    #+#             */
-/*   Updated: 2026/04/28 14:22:44 by adduarte         ###   ########.fr       */
+/*   Updated: 2026/04/28 17:35:05 by carmoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,18 +60,43 @@ static int	env_len(char **envp)
 	return (len);
 }
 
+static char	**create_new_env(char **old_env, int env_size)
+{
+	char	**new_envp;
+	int		i;
+
+	new_envp = malloc(sizeof(char *) * (env_size + 2));
+	if (!new_envp)
+		return (NULL);
+	i = 0;
+	while (i < env_size)
+	{
+		new_envp[i] = old_env[i];
+		i++;
+	}
+	return (new_envp);
+}
+
 void	set_env(t_shell *shell, const char *key, const char *value)
 {
-	int		i;
+	int		env_size;
 	char	*new_var;
+	char	**new_envp;
 
 	if (update_env_value(shell, key, value))
 		return ;
-	i = env_len(shell->envp);
-	shell->envp = realloc(shell->envp, sizeof(char *) * (i + 2));
+	env_size = env_len(shell->envp);
+	new_envp = create_new_env(shell->envp, env_size);
+	if (!new_envp)
+		return ;
 	new_var = join_env_var(key, value);
 	if (!new_var)
+	{
+		free(new_envp);
 		return ;
-	shell->envp[i] = new_var;
-	shell->envp[i + 1] = NULL;
+	}
+	new_envp[env_size] = new_var;
+	new_envp[env_size + 1] = NULL;
+	free(shell->envp);
+	shell->envp = new_envp;
 }

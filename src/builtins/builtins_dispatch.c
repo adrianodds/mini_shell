@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_dispatch.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: carmoliv <carmoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 14:12:51 by adduarte          #+#    #+#             */
-/*   Updated: 2026/04/28 14:17:01 by adduarte         ###   ########.fr       */
+/*   Updated: 2026/04/28 16:20:17 by carmoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

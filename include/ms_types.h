@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ms_types.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: carmoliv <carmoliv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/04/28 17:26:47 by carmoliv          #+#    #+#             */
+/*   Updated: 2026/04/28 18:12:55 by carmoliv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MS_TYPES_H
 # define MS_TYPES_H
 
@@ -37,8 +49,15 @@ typedef struct s_shell
 	int				pipe_fd[2];
 	int				last_pipe_out;
 	t_token			*tokens;
-	t_cmd				*commands;
+	t_cmd			*commands;
 }	t_shell;
+
+typedef struct s_reader
+{
+	char	*res;
+	size_t	len;
+	size_t	cap;
+}	t_reader;
 
 # define TOKEN_WORD 0
 # define TOKEN_PIPE 1
