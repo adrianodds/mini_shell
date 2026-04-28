@@ -6,7 +6,7 @@
 /*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 14:14:52 by adduarte          #+#    #+#             */
-/*   Updated: 2026/04/28 14:14:54 by adduarte         ###   ########.fr       */
+/*   Updated: 2026/04/28 16:13:16 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 int	g_signal = 0;
 
 static void	minishell_loop(t_shell *shell);
+static void	setup_readline(void);
+static int	handle_tab(int count, int key);
 
 static char	*read_shell_input(void)
 {
@@ -56,6 +58,32 @@ static void	setup_signals(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
+static void	setup_readline(void)
+{
+	rl_bind_key('\t', handle_tab);
+}
+
+static int	handle_tab(int count, int key)
+{
+	int	i;
+
+	(void)count;
+	(void)key;
+	if (!rl_line_buffer)
+		return (rl_insert(1, '\t'));
+	i = 0;
+	while (rl_line_buffer[i] == ' ' || rl_line_buffer[i] == '\t')
+		i++;
+	if (rl_line_buffer[i] == '\0')
+		return (rl_insert(1, '\t'));
+	if (rl_point == 0)
+		return (rl_insert(1, '\t'));
+	if (rl_line_buffer[rl_point - 1] == ' '
+		|| rl_line_buffer[rl_point - 1] == '\t')
+		return (rl_possible_completions(1, '\t'));
+	return (rl_complete(1, '\t'));
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_shell	shell;
@@ -67,6 +95,7 @@ int	main(int argc, char **argv, char **envp)
 	shell.commands = NULL;
 	shell.last_pipe_out = -1;
 	setup_signals();
+	setup_readline();
 	if (argc > 2 && ft_strncmp(argv[1], "-c", 3) == 0)
 	{
 		parse_input(&shell, argv[2]);
@@ -95,7 +124,5 @@ static void	minishell_loop(t_shell *shell)
 		}
 		handle_input(shell, input);
 		free(input);
-		fflush(stdout);
-		fflush(stderr);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 14:15:37 by adduarte          #+#    #+#             */
-/*   Updated: 2026/04/28 14:24:03 by adduarte         ###   ########.fr       */
+/*   Updated: 2026/04/28 15:24:32 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,12 @@ static void	wait_children(t_shell *shell, pid_t last_pid)
 static int	handle_single_builtin(t_shell *shell, t_cmd *commands,
 		int cmd_count)
 {
+	if (cmd_count == 1 && commands->argc > 0
+		&& ft_strncmp(commands->args[0], "exit", 5) == 0)
+	{
+		handle_builtin(shell, commands);
+		exit(shell->exit_status);
+	}
 	if (cmd_count == 1 && commands->argc > 0 && is_builtin(commands->args[0])
 		&& !commands->redirects)
 	{

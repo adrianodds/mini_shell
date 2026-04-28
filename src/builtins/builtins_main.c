@@ -6,7 +6,7 @@
 /*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 14:14:35 by adduarte          #+#    #+#             */
-/*   Updated: 2026/04/28 14:14:37 by adduarte         ###   ########.fr       */
+/*   Updated: 2026/04/28 16:10:15 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static int	parse_exit_arg(t_shell *shell, t_cmd *cmd, int *exit_code)
 		shell->exit_status = 2;
 		return (0);
 	}
-	*exit_code = atoi(cmd->args[1]);
+	*exit_code = (cmd->args[1]);
 	return (1);
 }
 

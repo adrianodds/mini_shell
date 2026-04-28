@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adduarte <adduarte@student.42porto.com>    #+#  +:+       +#+        */
+/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-04-16 16:45:17 by adduarte          #+#    #+#             */
-/*   Updated: 2025/05/10 15:38:30 by adduarte         ###   ########.fr       */
+/*   Created: 2025/04/16 16:45:17 by adduarte          #+#    #+#             */
+/*   Updated: 2026/04/28 16:10:24 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,5 +62,5 @@ int	main(void)
 {
 	//const char *rep_number;
 	//rep_number = "             +1";
-	printf("%d\n", ft_atoi("\t\n\r\v\f  469 \n")));
+	printf("%d\n", ft_("\t\n\r\v\f  469 \n")));
 }*/
