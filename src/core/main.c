@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: carmoliv <carmoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 17:50:27 by carmoliv          #+#    #+#             */
-/*   Updated: 2026/04/28 19:10:49 by adduarte         ###   ########.fr       */
+/*   Updated: 2026/06/19 17:44:41 by carmoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ static void	setup_readline(void)
 {
 	rl_clear_history();
 	rl_on_new_line();
+	rl_bind_keyseq("\\033[5~", rl_get_previous_history);
+	rl_bind_keyseq("\\033[6~", rl_get_next_history);
 }
 
 int	main(int argc, char **argv, char **envp)
