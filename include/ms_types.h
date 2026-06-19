@@ -47,8 +47,7 @@ typedef struct s_shell
 	char			*current_path;
 	char			**paths;
 	int				pipe_fd[2];
-	int				last_pipe_out;
-	t_token			*tokens;
+	int				last_pipe_out;	pid_t		pid;	t_token			*tokens;
 	t_cmd			*commands;
 }	t_shell;
 

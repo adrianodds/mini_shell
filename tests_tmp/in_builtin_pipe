@@ -1,0 +1,2 @@
+echo -n hello | wc -c
+exit

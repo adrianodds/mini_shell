@@ -1,0 +1,4 @@
+VAR=9
+unset VAR
+echo $VAR
+exit

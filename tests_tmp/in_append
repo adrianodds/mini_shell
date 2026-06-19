@@ -1,0 +1,4 @@
+echo line1 > tests_tmp/afile
+echo line2 >> tests_tmp/afile
+cat tests_tmp/afile
+exit

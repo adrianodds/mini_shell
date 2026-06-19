@@ -1,0 +1,3 @@
+echo hi > tests_tmp/outfile
+cat tests_tmp/outfile
+exit

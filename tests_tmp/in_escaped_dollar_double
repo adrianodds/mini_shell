@@ -1,0 +1,3 @@
+VAR=5
+echo "a\$VAR"
+exit

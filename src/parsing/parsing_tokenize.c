@@ -76,6 +76,15 @@ t_token	*tokenize(t_shell *shell, char *input)
 	quote_char = 0;
 	while (*input)
 	{
+		/* handle backslash escaping: skip next char when appropriate */
+		if (*input == '\\' && (!in_quote || (in_quote && quote_char == '"')))
+		{
+			if (*(input + 1))
+				input += 2;
+			else
+				input++;
+			continue ;
+		}
 		if (handle_quote_state(&in_quote, &quote_char, &input))
 			continue ;
 		if (handle_special_token(&tokens, &input, &start, in_quote))
@@ -83,5 +92,11 @@ t_token	*tokenize(t_shell *shell, char *input)
 		input++;
 	}
 	add_word_token(&tokens, start, input);
+	if (in_quote)
+	{
+		ft_putstr_fd("minishell: syntax error: unclosed quote\n", 2);
+		free_tokens(tokens);
+		return (NULL);
+	}
 	return (tokens);
 }

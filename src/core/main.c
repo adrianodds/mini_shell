@@ -68,6 +68,7 @@ int	main(int argc, char **argv, char **envp)
 	shell.tokens = NULL;
 	shell.commands = NULL;
 	shell.last_pipe_out = -1;
+	shell.pid = getpid();
 	setup_signals();
 	setup_readline();
 	if (argc > 2 && ft_strncmp(argv[1], "-c", 3) == 0)

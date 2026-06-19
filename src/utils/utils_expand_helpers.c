@@ -17,16 +17,25 @@ static int	append_var_value(t_shell *shell, char *var_name, char *result,
 		int j)
 {
 	char	*var_value;
-	char	*exit_code;
+	char	*pid_str;
 	int		k;
 
 	if (ft_strncmp(var_name, "?", 2) == 0)
 	{
-		exit_code = ft_itoa(shell->exit_status);
+		pid_str = ft_itoa(shell->exit_status);
 		k = 0;
-		while (exit_code[k] && j < 8191)
-			result[j++] = exit_code[k++];
-		free(exit_code);
+		while (pid_str[k] && j < 8191)
+			result[j++] = pid_str[k++];
+		free(pid_str);
+		return (j);
+	}
+	if (ft_strncmp(var_name, "$", 2) == 0)
+	{
+		pid_str = ft_itoa(shell->pid);
+		k = 0;
+		while (pid_str[k] && j < 8191)
+			result[j++] = pid_str[k++];
+		free(pid_str);
 		return (j);
 	}
 	var_value = get_env(shell, var_name);
@@ -46,6 +55,13 @@ static int	read_var_name(const char *str, int *i, char *var_name)
 	if (str[*i] == '?')
 	{
 		var_name[0] = '?';
+		var_name[1] = '\0';
+		(*i)++;
+		return (1);
+	}
+	if (str[*i] == '$')
+	{
+		var_name[0] = '$';
 		var_name[1] = '\0';
 		(*i)++;
 		return (1);

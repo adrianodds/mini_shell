@@ -38,15 +38,49 @@ t_cmd	*ensure_current_cmd(t_cmd **commands, t_cmd **last, t_cmd *current)
 	return (current);
 }
 
+static int	is_assignment(const char *s)
+{
+	int i;
+
+	if (!s || !*s)
+		return (0);
+	if (!(ft_isalpha(s[0]) || s[0] == '_'))
+		return (0);
+	i = 1;
+	while (s[i] && s[i] != '=')
+	{
+		if (!ft_isalnum(s[i]) && s[i] != '_')
+			return (0);
+		i++;
+	}
+	if (s[i] != '=')
+		return (0);
+	return (1);
+}
+
 void	handle_word_token(t_shell *shell, t_cmd *current, t_token **token_iter)
 {
 	char	*processed_value;
 	char	*expanded_value;
+	char	*eq_pos;
 
 	processed_value = expand_variables(shell, (*token_iter)->value);
 	expanded_value = remove_quotes(processed_value, 0, 0, 0);
 	if (expanded_value && *expanded_value)
 	{
+		if (is_assignment(expanded_value))
+		{
+			eq_pos = ft_strchr(expanded_value, '=');
+			if (eq_pos)
+			{
+				*eq_pos = '\0';
+				set_env(shell, expanded_value, eq_pos + 1);
+				free(processed_value);
+				free(expanded_value);
+				*token_iter = (*token_iter)->next;
+				return ;
+			}
+		}
 		current->args[current->argc] = expanded_value;
 		current->argc++;
 	}

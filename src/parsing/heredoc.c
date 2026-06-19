@@ -27,55 +27,27 @@ static char	*heredoc_tmp_name(void)
 	return (name);
 }
 
-static int	is_delimiter(char *line, char *delimiter)
-{
-	size_t	len;
-
-	len = ft_strlen(delimiter);
-	if (ft_strncmp(line, delimiter, len) == 0
-		&& line[len] == '\n')
-		return (1);
-	return (0);
-}
-
-static int	handle_line_flush(char *line, size_t len, int fd, char *delimiter)
-{
-	line[len] = '\0';
-	if (is_delimiter(line, delimiter))
-	{
-		free(line);
-		return (0);
-	}
-	write(fd, line, len);
-	return (1);
-}
 
 static char	*heredoc_write_loop(int fd, char *delimiter)
 {
-	char	buffer[4096];
 	char	*line;
-	size_t	len;
-	ssize_t	bytes;
+	size_t	dlen;
 
-	line = malloc(4096);
-	if (!line)
-		return (NULL);
-	len = 0;
-	bytes = read(STDIN_FILENO, buffer, 4096);
-	while (bytes > 0)
+	dlen = ft_strlen(delimiter);
+	while (1)
 	{
-		if (len + 1 >= 4096)
-			return (free(line), NULL);
-		line[len++] = buffer[0];
-		if (buffer[0] == '\n')
+		line = read_line_from_fd(STDIN_FILENO);
+		if (!line)
+			break ;
+		if (ft_strncmp(line, delimiter, dlen) == 0 &&
+			(line[dlen] == '\n' || line[dlen] == '\0'))
 		{
-			if (!handle_line_flush(line, len, fd, delimiter))
-				return (NULL);
-			len = 0;
+			free(line);
+			break ;
 		}
-		bytes = read(STDIN_FILENO, buffer, 4096);
+		write(fd, line, ft_strlen(line));
+		free(line);
 	}
-	free(line);
 	return (NULL);
 }
 

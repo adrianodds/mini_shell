@@ -1,0 +1,5 @@
+VAR=123
+cat << 'EOF'
+$VAR
+EOF
+exit

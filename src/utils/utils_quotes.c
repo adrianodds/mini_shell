@@ -44,7 +44,18 @@ char	*remove_quotes(const char *str, int len, int i, int j)
 			i++;
 		}
 		else
-			result[j++] = str[i++];
+		{
+			/* inside double quotes, handle backslash escaping for certain chars */
+			if (quote_char == '"' && str[i] == '\\' && str[i + 1]
+				&& (str[i + 1] == '"' || str[i + 1] == '\\'
+				|| str[i + 1] == '$' || str[i + 1] == '`'))
+			{
+				i++;
+				result[j++] = str[i++];
+			}
+			else
+				result[j++] = str[i++];
+		}
 	}
 	return (result[j] = '\0', result);
 }

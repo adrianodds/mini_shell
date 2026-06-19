@@ -1,0 +1,2 @@
+echo -n no_newline
+exit

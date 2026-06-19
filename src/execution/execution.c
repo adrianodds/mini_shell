@@ -41,8 +41,13 @@ static void	wait_children(t_shell *shell, pid_t last_pid)
 		waited_pid = wait(&status);
 		if (waited_pid <= 0)
 			break ;
-		if (waited_pid == last_pid && WIFEXITED(status))
-			shell->exit_status = WEXITSTATUS(status);
+		if (waited_pid == last_pid)
+		{
+			if (WIFEXITED(status))
+				shell->exit_status = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				shell->exit_status = 128 + WTERMSIG(status);
+		}
 	}
 }
 
@@ -88,19 +93,25 @@ static pid_t	spawn_commands(t_shell *shell, t_cmd *commands)
 
 	current = commands;
 	last_pid = -1;
-	while (current)
+
+	 while (current)
 	{
 		if (current->argc > 0)
 		{
 			setup_pipes(shell, current);
 			pid = fork();
 			if (pid == 0)
+			{
+				signal(SIGINT, SIG_DFL);
+				signal(SIGQUIT, SIG_DFL);
 				exec_child_process(shell, commands, current);
+			}
 			if (pid > 0)
 				last_pid = pid;
 		}
 		close_current_pipes(current);
 		current = current->next;
 	}
+
 	return (last_pid);
 }
