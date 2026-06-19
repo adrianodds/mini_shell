@@ -6,7 +6,7 @@
 /*   By: carmoliv <carmoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 17:50:27 by carmoliv          #+#    #+#             */
-/*   Updated: 2026/06/19 17:44:41 by carmoliv         ###   ########.fr       */
+/*   Updated: 2026/06/19 18:19:29 by carmoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,30 @@ static void	setup_signals(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
+static int	custom_tab_handler(int count, int key)
+{
+	int	i;
+
+	(void)count;
+	(void)key;
+	i = 0;
+	while (i < rl_point && rl_line_buffer[i])
+	{
+		if (rl_line_buffer[i] != ' ' && rl_line_buffer[i] != '\t')
+			return (rl_complete(0, 0));
+		i++;
+	}
+	return (rl_insert(1, '\t'));
+}
+
 static void	setup_readline(void)
 {
 	rl_clear_history();
 	rl_on_new_line();
 	rl_bind_keyseq("\\033[5~", rl_get_previous_history);
 	rl_bind_keyseq("\\033[6~", rl_get_next_history);
+	rl_completion_query_items = 256;
+	rl_bind_key('\t', custom_tab_handler);
 }
 
 int	main(int argc, char **argv, char **envp)
