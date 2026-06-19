@@ -6,7 +6,7 @@
 /*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 14:15:37 by adduarte          #+#    #+#             */
-/*   Updated: 2026/04/28 15:24:32 by adduarte         ###   ########.fr       */
+/*   Updated: 2026/06/19 16:10:41 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,13 @@ static void	wait_children(t_shell *shell, pid_t last_pid)
 			if (WIFEXITED(status))
 				shell->exit_status = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
+			{
 				shell->exit_status = 128 + WTERMSIG(status);
+				if (WTERMSIG(status) == SIGQUIT)
+        			write(2, "Quit (core dumped)\n", 19);
+    			else if (WTERMSIG(status) == SIGINT)
+        			write(2, "\n", 1);	
+			}
 		}
 	}
 }
