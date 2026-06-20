@@ -9,6 +9,8 @@ INC_DIR		=	.
 LIBFT_DIR	=	$(SRC_DIR)/libft
 LIBFT		=	$(LIBFT_DIR)/libft.a
 
+VALGRIND_SUPP	=	valgrind_suppression.supp
+
 SOURCES		=	$(SRC_DIR)/core/main.c \
 				$(SRC_DIR)/core/read_fd.c \
 				$(SRC_DIR)/core/read_fd_utils.c \
@@ -53,14 +55,44 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -I$(INC_DIR) -c $< -o $@
 
+$(VALGRIND_SUPP):
+	@echo "{" > $(VALGRIND_SUPP)
+	@echo "   readline_memory_leak_suppression" >> $(VALGRIND_SUPP)
+	@echo "   Memcheck:Leak" >> $(VALGRIND_SUPP)
+	@echo "   ..." >> $(VALGRIND_SUPP)
+	@echo "   fun:readline" >> $(VALGRIND_SUPP)
+	@echo "}" >> $(VALGRIND_SUPP)
+	@echo "{" >> $(VALGRIND_SUPP)
+	@echo "   readline_memory_leak_suppression" >> $(VALGRIND_SUPP)
+	@echo "   Memcheck:Leak" >> $(VALGRIND_SUPP)
+	@echo "   ..." >> $(VALGRIND_SUPP)
+	@echo "   fun:add_history" >> $(VALGRIND_SUPP)
+	@echo "}" >> $(VALGRIND_SUPP)
+	@echo "{" >> $(VALGRIND_SUPP)
+	@echo "   readline_memory_leak_suppression" >> $(VALGRIND_SUPP)
+	@echo "   Memcheck:Leak" >> $(VALGRIND_SUPP)
+	@echo "   ..." >> $(VALGRIND_SUPP)
+	@echo "   fun:_rl_*" >> $(VALGRIND_SUPP)
+	@echo "}" >> $(VALGRIND_SUPP)
+	@echo "{" >> $(VALGRIND_SUPP)
+	@echo "   suppress_execve_bin_error" >> $(VALGRIND_SUPP)
+	@echo "   Memcheck:Leak" >> $(VALGRIND_SUPP)
+	@echo "   ..." >> $(VALGRIND_SUPP)
+	@echo "   obj:/usr/bin/*" >> $(VALGRIND_SUPP)
+	@echo "}" >> $(VALGRIND_SUPP)
+
+v: $(NAME) $(VALGRIND_SUPP)
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=./$(VALGRIND_SUPP) ./$(NAME)
+
 clean:
 	rm -rf $(OBJ_DIR)
 	$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean
 	rm -f $(NAME)
+	rm -f $(VALGRIND_SUPP)
 	$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re v

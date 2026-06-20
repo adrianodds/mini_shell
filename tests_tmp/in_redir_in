@@ -1,5 +1,0 @@
-cat > tests_tmp/myin <<EOF
-content_in
-EOF
-cat < tests_tmp/myin
-exit

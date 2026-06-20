@@ -1,3 +1,0 @@
-VARX=9
-echo $VARX
-exit

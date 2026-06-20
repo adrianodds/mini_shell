@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: carmoliv <carmoliv@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 18:39:03 by carmoliv          #+#    #+#             */
-/*   Updated: 2026/04/28 18:39:15 by carmoliv         ###   ########.fr       */
+/*   Updated: 2026/06/20 14:46:50 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ static char	*heredoc_tmp_name(void)
 	return (name);
 }
 
-
 static char	*heredoc_write_loop(int fd, char *delimiter)
 {
 	char	*line;
@@ -39,8 +38,8 @@ static char	*heredoc_write_loop(int fd, char *delimiter)
 		line = read_line_from_fd(STDIN_FILENO);
 		if (!line)
 			break ;
-		if (ft_strncmp(line, delimiter, dlen) == 0 &&
-			(line[dlen] == '\n' || line[dlen] == '\0'))
+		if (ft_strncmp(line, delimiter, dlen) == 0
+			&& (line[dlen] == '\n' || line[dlen] == '\0'))
 		{
 			free(line);
 			break ;

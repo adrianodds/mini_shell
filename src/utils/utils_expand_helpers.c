@@ -6,45 +6,47 @@
 /*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 14:16:21 by adduarte          #+#    #+#             */
-/*   Updated: 2026/04/28 14:57:27 by adduarte         ###   ########.fr       */
+/*   Updated: 2026/06/20 15:01:57 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 #include "../../include/ms_expand.h"
 
+static int	copy_to_result(char *result, int j, char *str)
+{
+	int	k;
+
+	k = 0;
+	while (str[k] && j < 8191)
+		result[j++] = str[k++];
+	return (j);
+}
+
 static int	append_var_value(t_shell *shell, char *var_name, char *result,
 		int j)
 {
 	char	*var_value;
 	char	*pid_str;
-	int		k;
 
 	if (ft_strncmp(var_name, "?", 2) == 0)
 	{
 		pid_str = ft_itoa(shell->exit_status);
-		k = 0;
-		while (pid_str[k] && j < 8191)
-			result[j++] = pid_str[k++];
+		j = copy_to_result(result, j, pid_str);
 		free(pid_str);
 		return (j);
 	}
 	if (ft_strncmp(var_name, "$", 2) == 0)
 	{
 		pid_str = ft_itoa(shell->pid);
-		k = 0;
-		while (pid_str[k] && j < 8191)
-			result[j++] = pid_str[k++];
+		j = copy_to_result(result, j, pid_str);
 		free(pid_str);
 		return (j);
 	}
 	var_value = get_env(shell, var_name);
 	if (!var_value)
 		return (j);
-	k = 0;
-	while (var_value[k] && j < 8191)
-		result[j++] = var_value[k++];
-	return (j);
+	return (copy_to_result(result, j, var_value));
 }
 
 static int	read_var_name(const char *str, int *i, char *var_name)

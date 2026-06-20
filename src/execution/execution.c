@@ -6,7 +6,7 @@
 /*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 14:15:37 by adduarte          #+#    #+#             */
-/*   Updated: 2026/06/19 16:10:41 by adduarte         ###   ########.fr       */
+/*   Updated: 2026/06/20 14:45:32 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,9 @@ static void	wait_children(t_shell *shell, pid_t last_pid)
 			{
 				shell->exit_status = 128 + WTERMSIG(status);
 				if (WTERMSIG(status) == SIGQUIT)
-        			write(2, "Quit (core dumped)\n", 19);
-    			else if (WTERMSIG(status) == SIGINT)
-        			write(2, "\n", 1);	
+					write(2, "Quit (core dumped)\n", 19);
+				else if (WTERMSIG(status) == SIGINT)
+					write(2, "\n", 1);
 			}
 		}
 	}
@@ -99,8 +99,7 @@ static pid_t	spawn_commands(t_shell *shell, t_cmd *commands)
 
 	current = commands;
 	last_pid = -1;
-
-	 while (current)
+	while (current)
 	{
 		if (current->argc > 0)
 		{
@@ -118,6 +117,5 @@ static pid_t	spawn_commands(t_shell *shell, t_cmd *commands)
 		close_current_pipes(current);
 		current = current->next;
 	}
-
 	return (last_pid);
 }

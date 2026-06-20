@@ -1,3 +1,0 @@
-export ETEST=8
-echo $ETEST
-exit

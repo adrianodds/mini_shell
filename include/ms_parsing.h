@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_parsing.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: carmoliv <carmoliv@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 17:26:42 by carmoliv          #+#    #+#             */
-/*   Updated: 2026/04/28 17:26:54 by carmoliv         ###   ########.fr       */
+/*   Updated: 2026/06/20 14:55:53 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,11 @@ typedef struct s_parse_ctx
 	t_cmd	**last;
 	t_token	**token_iter;
 }	t_parse_ctx;
+
+typedef struct s_quote
+{
+	int		in_quote;
+	char	quote_char;
+}	t_quote;
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_types.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: carmoliv <carmoliv@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 17:26:47 by carmoliv          #+#    #+#             */
-/*   Updated: 2026/04/28 18:12:55 by carmoliv         ###   ########.fr       */
+/*   Updated: 2026/06/20 14:58:48 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,9 @@ typedef struct s_shell
 	char			*current_path;
 	char			**paths;
 	int				pipe_fd[2];
-	int				last_pipe_out;	pid_t		pid;	t_token			*tokens;
+	int				last_pipe_out;
+	pid_t			pid;
+	t_token			*tokens;
 	t_cmd			*commands;
 }	t_shell;
 

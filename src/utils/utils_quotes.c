@@ -6,7 +6,7 @@
 /*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 14:16:36 by adduarte          #+#    #+#             */
-/*   Updated: 2026/04/28 14:49:38 by adduarte         ###   ########.fr       */
+/*   Updated: 2026/06/20 15:08:21 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,39 +23,41 @@ static char	*alloc_remove_quotes(const char *str, int *len)
 	return (result);
 }
 
+static void	process_char(const char *str, char *result, t_rq *ctx)
+{
+	if (!ctx->quote_char && (str[ctx->i] == '\'' || str[ctx->i] == '"'))
+		ctx->quote_char = str[ctx->i++];
+	else if (ctx->quote_char && str[ctx->i] == ctx->quote_char)
+	{
+		ctx->quote_char = 0;
+		ctx->i++;
+	}
+	else if (ctx->quote_char == '"' && str[ctx->i] == '\\' && str[ctx->i + 1]
+		&& (str[ctx->i + 1] == '"' || str[ctx->i + 1] == '\\' || str[ctx->i
+				+ 1] == '$' || str[ctx->i + 1] == '`'))
+	{
+		ctx->i++;
+		result[ctx->j++] = str[ctx->i++];
+	}
+	else
+		result[ctx->j++] = str[ctx->i++];
+}
+
 char	*remove_quotes(const char *str, int len, int i, int j)
 {
 	char	*result;
-	char	quote_char;
+	t_rq	ctx;
 
+	(void)i;
+	(void)j;
 	result = alloc_remove_quotes(str, &len);
 	if (!result)
 		return (NULL);
-	i = 0;
-	j = 0;
-	quote_char = 0;
-	while (i < len)
-	{
-		if (!quote_char && (str[i] == '\'' || str[i] == '"'))
-			quote_char = str[i++];
-		else if (quote_char && str[i] == quote_char)
-		{
-			quote_char = 0;
-			i++;
-		}
-		else
-		{
-			/* inside double quotes, handle backslash escaping for certain chars */
-			if (quote_char == '"' && str[i] == '\\' && str[i + 1]
-				&& (str[i + 1] == '"' || str[i + 1] == '\\'
-				|| str[i + 1] == '$' || str[i + 1] == '`'))
-			{
-				i++;
-				result[j++] = str[i++];
-			}
-			else
-				result[j++] = str[i++];
-		}
-	}
-	return (result[j] = '\0', result);
+	ctx.i = 0;
+	ctx.j = 0;
+	ctx.quote_char = 0;
+	while (ctx.i < len)
+		process_char(str, result, &ctx);
+	result[ctx.j] = '\0';
+	return (result);
 }

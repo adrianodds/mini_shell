@@ -6,7 +6,7 @@
 /*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 14:16:11 by adduarte          #+#    #+#             */
-/*   Updated: 2026/04/28 19:26:25 by adduarte         ###   ########.fr       */
+/*   Updated: 2026/06/20 14:57:04 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,37 +62,48 @@ int	handle_quote_state(int *in_quote, char *quote_char, char **input)
 	return (0);
 }
 
+static int	handle_backslash(t_quote *quote, char **input)
+{
+	if (**input == '\\' && (!quote->in_quote || quote->quote_char == '"'))
+	{
+		if (*(*input + 1))
+			*input += 2;
+		else
+			(*input)++;
+		return (1);
+	}
+	return (0);
+}
+
+static void	tokenize_loop(t_token **tokens, char **start,
+			char **input, t_quote *quote)
+{
+	while (**input)
+	{
+		if (handle_backslash(quote, input))
+			continue ;
+		if (handle_quote_state(&quote->in_quote, &quote->quote_char, input))
+			continue ;
+		if (handle_special_token(tokens, input, start, quote->in_quote))
+			continue ;
+		(*input)++;
+	}
+}
+
 t_token	*tokenize(t_shell *shell, char *input)
 {
 	t_token	*tokens;
 	char	*start;
-	int		in_quote;
-	char	quote_char;
+	t_quote	quote;
 
 	(void)shell;
 	tokens = NULL;
 	start = input;
-	in_quote = 0;
-	quote_char = 0;
-	while (*input)
-	{
-		/* handle backslash escaping: skip next char when appropriate */
-		if (*input == '\\' && (!in_quote || (in_quote && quote_char == '"')))
-		{
-			if (*(input + 1))
-				input += 2;
-			else
-				input++;
-			continue ;
-		}
-		if (handle_quote_state(&in_quote, &quote_char, &input))
-			continue ;
-		if (handle_special_token(&tokens, &input, &start, in_quote))
-			continue ;
-		input++;
-	}
+	quote.in_quote = 0;
+	quote.quote_char = 0;
+	tokenize_loop(&tokens, &start, &input, &quote);
 	add_word_token(&tokens, start, input);
-	if (in_quote)
+	if (quote.in_quote)
 	{
 		ft_putstr_fd("minishell: syntax error: unclosed quote\n", 2);
 		free_tokens(tokens);
