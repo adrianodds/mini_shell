@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2026/06/20 15:48:08 by adduarte          #+#    #+#              #
+#    Updated: 2026/06/20 16:59:14 by adduarte         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME		=	minishell
 CC			=	cc
 CFLAGS		=	-Wall -Wextra -Werror
@@ -32,6 +44,8 @@ SOURCES		=	$(SRC_DIR)/core/main.c \
 				$(SRC_DIR)/builtins/builtins_misc.c \
 				$(SRC_DIR)/builtins/builtins_export.c \
 				$(SRC_DIR)/builtins/builtins_unset.c \
+				$(SRC_DIR)/builtins/help_builtin_cd.c \
+				$(SRC_DIR)/builtins/print_export.c \
 				$(SRC_DIR)/builtins/builtins_dispatch.c \
 				$(SRC_DIR)/env/environment.c \
 				$(SRC_DIR)/env/environment_set.c \
@@ -73,6 +87,18 @@ $(VALGRIND_SUPP):
 	@echo "   Memcheck:Leak" >> $(VALGRIND_SUPP)
 	@echo "   ..." >> $(VALGRIND_SUPP)
 	@echo "   fun:_rl_*" >> $(VALGRIND_SUPP)
+	@echo "}" >> $(VALGRIND_SUPP)
+	@echo "{" >> $(VALGRIND_SUPP)
+	@echo "   readline_keymap_suppression" >> $(VALGRIND_SUPP)
+	@echo "   Memcheck:Leak" >> $(VALGRIND_SUPP)
+	@echo "   ..." >> $(VALGRIND_SUPP)
+	@echo "   fun:rl_make_bare_keymap" >> $(VALGRIND_SUPP)
+	@echo "}" >> $(VALGRIND_SUPP)
+	@echo "{" >> $(VALGRIND_SUPP)
+	@echo "   readline_keymap_suppression2" >> $(VALGRIND_SUPP)
+	@echo "   Memcheck:Leak" >> $(VALGRIND_SUPP)
+	@echo "   ..." >> $(VALGRIND_SUPP)
+	@echo "   fun:rl_generic_bind" >> $(VALGRIND_SUPP)
 	@echo "}" >> $(VALGRIND_SUPP)
 	@echo "{" >> $(VALGRIND_SUPP)
 	@echo "   suppress_execve_bin_error" >> $(VALGRIND_SUPP)

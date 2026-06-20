@@ -6,7 +6,7 @@
 /*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 14:15:37 by adduarte          #+#    #+#             */
-/*   Updated: 2026/06/20 14:45:32 by adduarte         ###   ########.fr       */
+/*   Updated: 2026/06/20 15:34:40 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ static int	handle_single_builtin(t_shell *shell, t_cmd *commands,
 		&& ft_strncmp(commands->args[0], "exit", 5) == 0)
 	{
 		handle_builtin(shell, commands);
+		free_shell(shell);
 		exit(shell->exit_status);
 	}
 	if (cmd_count == 1 && commands->argc > 0 && is_builtin(commands->args[0])

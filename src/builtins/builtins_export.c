@@ -6,7 +6,7 @@
 /*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 14:14:29 by adduarte          #+#    #+#             */
-/*   Updated: 2026/04/28 14:19:23 by adduarte         ###   ########.fr       */
+/*   Updated: 2026/06/20 16:44:14 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,11 @@ int	builtin_export(t_shell *shell, t_cmd *cmd)
 	int	i;
 	int	has_error;
 
+	if (cmd->argc == 1)
+	{
+		print_export(shell);
+		return (0);
+	}
 	i = 1;
 	has_error = 0;
 	while (i < cmd->argc)

@@ -6,7 +6,7 @@
 /*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 14:15:51 by adduarte          #+#    #+#             */
-/*   Updated: 2026/06/20 14:52:26 by adduarte         ###   ########.fr       */
+/*   Updated: 2026/06/20 16:43:13 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,10 +58,12 @@ static int	is_assignment(const char *s)
 	return (1);
 }
 
-static int	handle_assignment(t_shell *shell, char *expanded_value)
+static int	handle_assignment(t_shell *shell, t_cmd *current, char *expanded_value)
 {
 	char	*eq_pos;
 
+	if (current->argc != 0 || !is_assignment(expanded_value))
+		return (0);
 	eq_pos = ft_strchr(expanded_value, '=');
 	if (!eq_pos)
 		return (0);
@@ -74,15 +76,12 @@ void	handle_word_token(t_shell *shell, t_cmd *current, t_token **token_iter)
 {
 	char	*processed_value;
 	char	*expanded_value;
-	int		is_assign;
 
 	processed_value = expand_variables(shell, (*token_iter)->value);
 	expanded_value = remove_quotes(processed_value, 0, 0, 0);
 	if (expanded_value && *expanded_value)
 	{
-		is_assign = is_assignment(expanded_value)
-			&& handle_assignment(shell, expanded_value);
-		if (is_assign)
+		if (handle_assignment(shell, current, expanded_value))
 		{
 			free(processed_value);
 			free(expanded_value);

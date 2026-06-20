@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_main.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: carmoliv <carmoliv@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 14:14:35 by adduarte          #+#    #+#             */
-/*   Updated: 2026/04/28 16:22:55 by carmoliv         ###   ########.fr       */
+/*   Updated: 2026/06/20 17:00:22 by adduarte         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,28 +70,25 @@ int	builtin_echo(t_shell *shell, t_cmd *cmd)
 	return (0);
 }
 
-int	builtin_cd(t_shell *shell, t_cmd *cmd)
+char	*get_cd_path(t_shell *shell, t_cmd *cmd, int *is_oldpwd)
 {
-	char	*path;
-	char	cwd[4096];
+	char	*oldpwd;
 
-	if (cmd->argc > 2)
-	{
-		printf("minishell: cd: too many arguments\n");
-		return (1);
-	}
+	*is_oldpwd = 0;
 	if (cmd->argc == 1)
-		path = get_env(shell, "HOME");
-	else
-		path = cmd->args[1];
-	if (chdir(path) == -1)
+		return (get_env(shell, "HOME"));
+	if (ft_strncmp(cmd->args[1], "-", 2) == 0)
 	{
-		perror(path);
-		return (1);
+		oldpwd = get_env(shell, "OLDPWD");
+		if (!oldpwd)
+		{
+			ft_putstr_fd("minishell: cd: OLDPWD not set\n", 2);
+			return (NULL);
+		}
+		*is_oldpwd = 1;
+		return (oldpwd);
 	}
-	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		set_env(shell, "PWD", cwd);
-	return (0);
+	return (cmd->args[1]);
 }
 
 int	builtin_exit(t_shell *shell, t_cmd *cmd)
