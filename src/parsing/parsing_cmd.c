@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_cmd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adduarte <adduarte@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: carmoliv <carmoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/28 14:15:51 by adduarte          #+#    #+#             */
-/*   Updated: 2026/06/20 16:43:13 by adduarte         ###   ########.fr       */
+/*   Updated: 2026/06/20 17:51:37 by carmoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ static int	is_assignment(const char *s)
 	return (1);
 }
 
-static int	handle_assignment(t_shell *shell, t_cmd *current, char *expanded_value)
+static int	handle_assignment(t_shell *shell, t_cmd *current,
+								char *expanded_value)
 {
 	char	*eq_pos;
 
