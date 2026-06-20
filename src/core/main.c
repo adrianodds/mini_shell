@@ -52,22 +52,6 @@ static void	setup_signals(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-static int	custom_tab_handler(int count, int key)
-{
-	int	i;
-
-	(void)count;
-	(void)key;
-	i = 0;
-	while (i < rl_point && rl_line_buffer[i])
-	{
-		if (rl_line_buffer[i] != ' ' && rl_line_buffer[i] != '\t')
-			return (rl_complete(0, 0));
-		i++;
-	}
-	return (rl_insert(1, '\t'));
-}
-
 static void	setup_readline(void)
 {
 	rl_clear_history();
@@ -75,7 +59,8 @@ static void	setup_readline(void)
 	rl_bind_keyseq("\\033[5~", rl_get_previous_history);
 	rl_bind_keyseq("\\033[6~", rl_get_next_history);
 	rl_completion_query_items = 256;
-	rl_bind_key('\t', custom_tab_handler);
+	rl_completion_entry_function = rl_filename_completion_function;
+	rl_bind_key('\t', rl_complete);
 }
 
 int	main(int argc, char **argv, char **envp)
